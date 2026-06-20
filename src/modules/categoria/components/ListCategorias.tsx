@@ -46,7 +46,6 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-  InputGroupText,
 } from "@/components/ui/input-group"
 import FormCategoria from '@/modules/categoria/components/FormCategoria'
 import { useCategorias } from '@/modules/categoria/hooks/use-categorias'

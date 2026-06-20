@@ -17,7 +17,6 @@ export interface CategoriaPayload {
 
 export async function getCategorias(params: GetCategoriasParams = {}) {
   const { data } = await apiClient.get('/Categorias', { params })
-  console.log("datos de la URL del GET_Categoria", data)
   return categoriasResponseSchema.parse(data)
 }
 

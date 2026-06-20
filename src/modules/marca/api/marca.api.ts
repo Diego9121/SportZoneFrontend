@@ -15,6 +15,7 @@ export interface GetMarcasParams {
 export interface MarcaPayload {
   nombre: string
   descripcion: string
+  logo?: string
 }
 
 export async function getMarcas(params: GetMarcasParams = {}) {

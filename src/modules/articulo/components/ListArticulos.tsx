@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Pencil, Plus, Search, Trash } from 'lucide-react'
+import { ImageOff, Pencil, Plus, Search, Trash } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   AlertDialog,
@@ -41,69 +41,72 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/select'
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group"
-import { useMarcas } from '@/modules/marca/hooks/use-marca'
-import type { Marca } from '../schemas/marca.schema'
-import { useDeleteMarca } from '../hooks/use-marca'
-import FormMarca from './FormMarca'
+} from '@/components/ui/input-group'
+import { useArticulos } from '@/modules/articulo/hooks/use-articulo'
+import type { Articulo } from '../schemas/articulo.schema'
+import { useDeleteArticulo } from '../hooks/use-articulo'
+import FormArticulo from './FormArticulo'
 
-export function ListMarcas() {
+export function ListArticulos() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
   const [filter, setFilter] = useState<string | undefined>(undefined)
-  const { data, isLoading, isError, error } = useMarcas(page, pageSize, filter)
+  const { data, isLoading, isError, error } = useArticulos(page, pageSize, filter)
   const [formOpen, setFormOpen] = useState(false)
-  const [deletingMarca, setDeletingMarca] = useState<Marca | null>(null,)
-  const deleteMarcaId = useDeleteMarca()
-  const [editingMarca, setEditingMarca] = useState<Marca | undefined>(
-    undefined,)
+  const [deletingArticulo, setDeletingArticulo] = useState<Articulo | null>(null)
+  const deleteArticuloId = useDeleteArticulo()
+  const [editingArticulo, setEditingArticulo] = useState<Articulo | undefined>(
+    undefined,
+  )
+
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Cargando marcas...</p>
+    return <p className="text-sm text-muted-foreground">Cargando artículos...</p>
   }
 
   if (isError) {
     return <p className="text-sm text-destructive">{error.message}</p>
   }
 
-  const marcas = data?.data.items ?? []
+  const articulos = data?.data.items ?? []
   const totalPages = data?.data.totalPages ?? 1
 
-  function openDelete(marca: Marca) {
-    setDeletingMarca(marca)
+  function openDelete(articulo: Articulo) {
+    setDeletingArticulo(articulo)
   }
   function confirmDelete() {
-    if (!deletingMarca) return
-    deleteMarcaId.mutate(deletingMarca.id, {
+    if (!deletingArticulo) return
+    deleteArticuloId.mutate(deletingArticulo.id, {
       onSuccess: () => {
-        toast.success('Marca eliminada correctamente.')
-        setDeletingMarca(null)
+        toast.success('Artículo eliminado correctamente.')
+        setDeletingArticulo(null)
       },
       onError: () => {
-        toast.error('No se pudo eliminar la marca.')
+        toast.error('No se pudo eliminar el artículo.')
       },
     })
   }
   function openCreate() {
-    setEditingMarca(undefined)
+    setEditingArticulo(undefined)
     setFormOpen(true)
   }
 
-  function openEdit(marca: Marca) {
-    setEditingMarca(marca)
+  function openEdit(articulo: Articulo) {
+    setEditingArticulo(articulo)
     setFormOpen(true)
   }
+
   return (
     <div>
       <div className="flex items-center justify-between">
         <InputGroup className="w-[300px]">
           <InputGroupInput
             id="input-group-url"
-            placeholder="Buscar marcas..."
+            placeholder="Buscar artículos..."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           />
@@ -113,53 +116,62 @@ export function ListMarcas() {
         </InputGroup>
         <Button onClick={openCreate}>
           <Plus />
-          Nueva marca
+          Nuevo artículo
         </Button>
       </div>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Logo</TableHead>
+            <TableHead>Imagen</TableHead>
+            <TableHead>Código</TableHead>
             <TableHead>Nombre</TableHead>
-            <TableHead>Descripción</TableHead>
-            <TableHead>Fecha de Creación</TableHead>
+            <TableHead>Categoría</TableHead>
+            <TableHead>Marca</TableHead>
+            <TableHead>Variantes</TableHead>
+            <TableHead>Stock</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
-
           </TableRow>
         </TableHeader>
         <TableBody>
-          {marcas.map((marca) => (
-            <TableRow key={marca.id}>
+          {articulos.map((articulo) => (
+            <TableRow key={articulo.id}>
               <TableCell>
-                {marca.logo ? (
-                  <img src={marca.logo} alt={marca.nombre} className="w-10 h-10 object-contain" />
+                {articulo.imagen ? (
+                  <img
+                    src={articulo.imagen}
+                    alt={articulo.nombre}
+                    className="w-10 h-10 object-contain"
+                  />
                 ) : (
                   <div className="w-10 h-10 bg-muted flex items-center justify-center">
-                    <Pencil className="w-5 h-5 text-muted-foreground" />
+                    <ImageOff className="w-5 h-5 text-muted-foreground" />
                   </div>
                 )}
               </TableCell>
+              <TableCell>{articulo.codigo}</TableCell>
+              <TableCell>{articulo.nombre}</TableCell>
               <TableCell>
-                <span className="inline-flex items-center rounded-md bg-blue-400/10 px-2 py-1 text-xs font-medium text-blue-400 inset-ring inset-ring-blue-400/30">{marca.nombre ?? '-'}</span>
-
+                <span className="inline-flex items-center rounded-md bg-blue-400/10 px-2 py-1 text-xs font-medium text-blue-400 inset-ring inset-ring-blue-400/30">
+                  {articulo.categoriaNombre}
+                </span>
               </TableCell>
-              <TableCell>{marca.descripcion ?? '-'}</TableCell>
-              <TableCell>
-                {new Date(marca.createdAt).toLocaleDateString()}
-              </TableCell>
+              <TableCell>{articulo.marcaNombre}</TableCell>
+              <TableCell>{articulo.totalVariantes}</TableCell>
+              <TableCell>{articulo.stockTotal}</TableCell>
               <TableCell className="text-right">
                 <Button
                   size="icon"
                   variant="ghost"
-                  aria-label="Eliminar marca"
-                  onClick={() => openDelete(marca)}
-                > <Trash />
+                  aria-label="Eliminar artículo"
+                  onClick={() => openDelete(articulo)}
+                >
+                  <Trash />
                 </Button>
                 <Button
                   size="icon"
                   variant="ghost"
-                  aria-label="Editar marca"
-                  onClick={() => openEdit(marca)}
+                  aria-label="Editar artículo"
+                  onClick={() => openEdit(articulo)}
                 >
                   <Pencil />
                 </Button>
@@ -216,16 +228,16 @@ export function ListMarcas() {
         </PaginationContent>
       </Pagination>
       <AlertDialog
-        open={deletingMarca !== null}
+        open={deletingArticulo !== null}
         onOpenChange={(open) => {
-          if (!open) setDeletingMarca(null)
+          if (!open) setDeletingArticulo(null)
         }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar marca?</AlertDialogTitle>
+            <AlertDialogTitle>¿Eliminar artículo?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción eliminará la marca "{deletingMarca?.nombre}" y
+              Esta acción eliminará el artículo "{deletingArticulo?.nombre}" y
               no se puede deshacer.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -233,7 +245,7 @@ export function ListMarcas() {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
-              disabled={deleteMarcaId.isPending}
+              disabled={deleteArticuloId.isPending}
             >
               Eliminar
             </AlertDialogAction>
@@ -244,11 +256,11 @@ export function ListMarcas() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editingMarca ? 'Editar marca' : 'Nueva marca'}
+              {editingArticulo ? 'Editar artículo' : 'Nuevo artículo'}
             </DialogTitle>
           </DialogHeader>
-          <FormMarca
-            marca={editingMarca}
+          <FormArticulo
+            articulo={editingArticulo}
             onSuccess={() => setFormOpen(false)}
           />
         </DialogContent>

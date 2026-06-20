@@ -12,74 +12,76 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { useCreateCategoria } from '@/modules/categoria/hooks/use-create-categoria'
-import { useUpdateCategoria } from '@/modules/categoria/hooks/use-update-categoria'
-import type { Categoria } from '@/modules/categoria/schemas/categoria.schema'
+import type { Marca } from '../schemas/marca.schema'
+import { useCreateMarca, useUpdateMarca } from '../hooks/use-marca'
 
-const CategoriaFormSchema = v.object({
+
+const MarcaFormSchema = v.object({
   nombre: v.pipe(
     v.string(),
     v.minLength(1, 'El nombre es obligatorio.'),
     v.maxLength(100, 'El nombre no puede superar los 100 caracteres.'),
   ),
   descripcion: v.optional(v.string(), ''),
+  logo: v.optional(v.string(), ''),
 })
 
-interface FormCategoriaProps {
-  categoria?: Categoria
-  onSuccess?: (categoria: Categoria) => void
+interface FormMarcaProps {
+  marca?: Marca
+  onSuccess?: (marca: Marca) => void
 }
 
-function FormCategoria({ categoria, onSuccess }: FormCategoriaProps) {
-  const isEditing = categoria !== undefined
+function FormMarca({ marca, onSuccess }: FormMarcaProps) {
+  const isEditing = marca !== undefined
 
   const form = useForm({
-    schema: CategoriaFormSchema,
+    schema: MarcaFormSchema,
     initialInput: {
-      nombre: categoria?.nombre ?? '',
-      descripcion: categoria?.descripcion ?? '',
+      nombre: marca?.nombre ?? '',
+      descripcion: marca?.descripcion ?? '',
+      logo: marca?.logo ?? '',
     },
   })
 
-  const createCategoria = useCreateCategoria()
-  const updateCategoria = useUpdateCategoria()
-  const isSubmitting = createCategoria.isPending || updateCategoria.isPending
+  const createMarca = useCreateMarca()
+  const updateMarca = useUpdateMarca()
+  const isSubmitting = createMarca.isPending || updateMarca.isPending
 
-  const handleSubmit: SubmitHandler<typeof CategoriaFormSchema> = (output) => {
+  const handleSubmit: SubmitHandler<typeof MarcaFormSchema> = (output) => {
     const promise = isEditing
-      ? updateCategoria.mutateAsync({ id: categoria.id, payload: output })
-      : createCategoria.mutateAsync(output)
+      ? updateMarca.mutateAsync({ id: marca.id, payload: output })
+      : createMarca.mutateAsync(output)
 
     promise
       .then((response) => {
         toast.success(
           isEditing
-            ? 'Categoría actualizada correctamente.'
-            : 'Categoría creada correctamente.',
+            ? 'Marca actualizada correctamente.'
+            : 'Marca creada correctamente.',
         )
         if (!isEditing) reset(form)
         onSuccess?.(response.data)
       })
       .catch(() => {
-        toast.error('No se pudo guardar la categoría.')
+        toast.error('No se pudo guardar la marca.')
       })
   }
 
   return (
-    <Form of={form} id="form-categoria" onSubmit={handleSubmit}>
+    <Form of={form} id="form-marca" onSubmit={handleSubmit}>
       <FieldGroup>
         <FormischField of={form} path={['nombre']}>
           {(field) => (
             <Field data-invalid={field.errors !== null}>
-              <FieldLabel htmlFor="categoria-nombre">Nombre</FieldLabel>
+              <FieldLabel htmlFor="marca-nombre">Nombre</FieldLabel>
               <Input
                 {...field.props}
-                id="categoria-nombre"
+                id="marca-nombre"
                 value={field.input ?? ''}
                 aria-invalid={field.errors !== null}
-                placeholder="Ej. Calzado Deportivo"
+                placeholder="Ej. adidas, nike, etc."
               />
-              <FieldDescription>Nombre visible de la categoría.</FieldDescription>
+              <FieldDescription>Nombre visible de la marca.</FieldDescription>
               {field.errors && (
                 <FieldError
                   errors={field.errors.map((message) => ({ message }))}
@@ -88,14 +90,33 @@ function FormCategoria({ categoria, onSuccess }: FormCategoriaProps) {
             </Field>
           )}
         </FormischField>
-
+        <FormischField of={form} path={['logo']}>
+          {(field) => (
+            <Field data-invalid={field.errors !== null}>
+              <FieldLabel htmlFor="marca-logo">Logo</FieldLabel>
+              <Input
+                {...field.props}
+                id="marca-logo"
+                value={field.input ?? ''}
+                aria-invalid={field.errors !== null}
+                placeholder="Ej. logo de la marca"
+              />
+              <FieldDescription>Logo de la marca.</FieldDescription>
+              {field.errors && (
+                <FieldError
+                  errors={field.errors.map((message) => ({ message }))}
+                />
+              )}
+            </Field>
+          )}
+        </FormischField>
         <FormischField of={form} path={['descripcion']}>
           {(field) => (
             <Field data-invalid={field.errors !== null}>
-              <FieldLabel htmlFor="categoria-descripcion">Descripción</FieldLabel>
+              <FieldLabel htmlFor="marca-descripcion">Descripción</FieldLabel>
               <Input
                 {...field.props}
-                id="categoria-descripcion"
+                id="marca-descripcion"
                 value={field.input ?? ''}
                 aria-invalid={field.errors !== null}
                 placeholder="Descripción opcional"
@@ -115,11 +136,11 @@ function FormCategoria({ categoria, onSuccess }: FormCategoriaProps) {
           Limpiar
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isEditing ? 'Guardar cambios' : 'Crear categoría'}
+          {isEditing ? 'Guardar cambios' : 'Crear marca'}
         </Button>
       </div>
     </Form>
   )
 }
 
-export default FormCategoria
+export default FormMarca
