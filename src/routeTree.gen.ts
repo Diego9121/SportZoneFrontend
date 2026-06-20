@@ -15,11 +15,12 @@ import { Route as DevolucionesRouteImport } from './routes/devoluciones'
 import { Route as ComprasRouteImport } from './routes/compras'
 import { Route as ClientesRouteImport } from './routes/clientes'
 import { Route as CategoriasRouteImport } from './routes/categorias'
-import { Route as AlmacenesRouteImport } from './routes/almacenes'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArticulosIndexRouteImport } from './routes/articulos/index'
+import { Route as AlmacenesIndexRouteImport } from './routes/almacenes/index'
 import { Route as ArticulosVariantesRouteImport } from './routes/articulos/variantes'
 import { Route as ArticulosFabricantesRouteImport } from './routes/articulos/fabricantes'
+import { Route as AlmacenesConsultaRouteImport } from './routes/almacenes/consulta'
 
 const VentasRoute = VentasRouteImport.update({
   id: '/ventas',
@@ -51,11 +52,6 @@ const CategoriasRoute = CategoriasRouteImport.update({
   path: '/categorias',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AlmacenesRoute = AlmacenesRouteImport.update({
-  id: '/almacenes',
-  path: '/almacenes',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -64,6 +60,11 @@ const IndexRoute = IndexRouteImport.update({
 const ArticulosIndexRoute = ArticulosIndexRouteImport.update({
   id: '/articulos/',
   path: '/articulos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlmacenesIndexRoute = AlmacenesIndexRouteImport.update({
+  id: '/almacenes/',
+  path: '/almacenes/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArticulosVariantesRoute = ArticulosVariantesRouteImport.update({
@@ -76,100 +77,112 @@ const ArticulosFabricantesRoute = ArticulosFabricantesRouteImport.update({
   path: '/articulos/fabricantes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AlmacenesConsultaRoute = AlmacenesConsultaRouteImport.update({
+  id: '/almacenes/consulta',
+  path: '/almacenes/consulta',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/almacenes': typeof AlmacenesRoute
   '/categorias': typeof CategoriasRoute
   '/clientes': typeof ClientesRoute
   '/compras': typeof ComprasRoute
   '/devoluciones': typeof DevolucionesRoute
   '/marcas': typeof MarcasRoute
   '/ventas': typeof VentasRoute
+  '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
   '/articulos/variantes': typeof ArticulosVariantesRoute
+  '/almacenes/': typeof AlmacenesIndexRoute
   '/articulos/': typeof ArticulosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/almacenes': typeof AlmacenesRoute
   '/categorias': typeof CategoriasRoute
   '/clientes': typeof ClientesRoute
   '/compras': typeof ComprasRoute
   '/devoluciones': typeof DevolucionesRoute
   '/marcas': typeof MarcasRoute
   '/ventas': typeof VentasRoute
+  '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
   '/articulos/variantes': typeof ArticulosVariantesRoute
+  '/almacenes': typeof AlmacenesIndexRoute
   '/articulos': typeof ArticulosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/almacenes': typeof AlmacenesRoute
   '/categorias': typeof CategoriasRoute
   '/clientes': typeof ClientesRoute
   '/compras': typeof ComprasRoute
   '/devoluciones': typeof DevolucionesRoute
   '/marcas': typeof MarcasRoute
   '/ventas': typeof VentasRoute
+  '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
   '/articulos/variantes': typeof ArticulosVariantesRoute
+  '/almacenes/': typeof AlmacenesIndexRoute
   '/articulos/': typeof ArticulosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/almacenes'
     | '/categorias'
     | '/clientes'
     | '/compras'
     | '/devoluciones'
     | '/marcas'
     | '/ventas'
+    | '/almacenes/consulta'
     | '/articulos/fabricantes'
     | '/articulos/variantes'
+    | '/almacenes/'
     | '/articulos/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/almacenes'
     | '/categorias'
     | '/clientes'
     | '/compras'
     | '/devoluciones'
     | '/marcas'
     | '/ventas'
+    | '/almacenes/consulta'
     | '/articulos/fabricantes'
     | '/articulos/variantes'
+    | '/almacenes'
     | '/articulos'
   id:
     | '__root__'
     | '/'
-    | '/almacenes'
     | '/categorias'
     | '/clientes'
     | '/compras'
     | '/devoluciones'
     | '/marcas'
     | '/ventas'
+    | '/almacenes/consulta'
     | '/articulos/fabricantes'
     | '/articulos/variantes'
+    | '/almacenes/'
     | '/articulos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AlmacenesRoute: typeof AlmacenesRoute
   CategoriasRoute: typeof CategoriasRoute
   ClientesRoute: typeof ClientesRoute
   ComprasRoute: typeof ComprasRoute
   DevolucionesRoute: typeof DevolucionesRoute
   MarcasRoute: typeof MarcasRoute
   VentasRoute: typeof VentasRoute
+  AlmacenesConsultaRoute: typeof AlmacenesConsultaRoute
   ArticulosFabricantesRoute: typeof ArticulosFabricantesRoute
   ArticulosVariantesRoute: typeof ArticulosVariantesRoute
+  AlmacenesIndexRoute: typeof AlmacenesIndexRoute
   ArticulosIndexRoute: typeof ArticulosIndexRoute
 }
 
@@ -217,13 +230,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoriasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/almacenes': {
-      id: '/almacenes'
-      path: '/almacenes'
-      fullPath: '/almacenes'
-      preLoaderRoute: typeof AlmacenesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -236,6 +242,13 @@ declare module '@tanstack/react-router' {
       path: '/articulos'
       fullPath: '/articulos/'
       preLoaderRoute: typeof ArticulosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/almacenes/': {
+      id: '/almacenes/'
+      path: '/almacenes'
+      fullPath: '/almacenes/'
+      preLoaderRoute: typeof AlmacenesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/articulos/variantes': {
@@ -252,20 +265,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArticulosFabricantesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/almacenes/consulta': {
+      id: '/almacenes/consulta'
+      path: '/almacenes/consulta'
+      fullPath: '/almacenes/consulta'
+      preLoaderRoute: typeof AlmacenesConsultaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AlmacenesRoute: AlmacenesRoute,
   CategoriasRoute: CategoriasRoute,
   ClientesRoute: ClientesRoute,
   ComprasRoute: ComprasRoute,
   DevolucionesRoute: DevolucionesRoute,
   MarcasRoute: MarcasRoute,
   VentasRoute: VentasRoute,
+  AlmacenesConsultaRoute: AlmacenesConsultaRoute,
   ArticulosFabricantesRoute: ArticulosFabricantesRoute,
   ArticulosVariantesRoute: ArticulosVariantesRoute,
+  AlmacenesIndexRoute: AlmacenesIndexRoute,
   ArticulosIndexRoute: ArticulosIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,5 +1,6 @@
 import { apiClient } from '@/lib/api-client'
 import {
+  articuloDetalleResponseSchema,
   articuloResponseSchema,
   articulosResponseSchema,
 } from '@/modules/articulo/schemas/articulo.schema'
@@ -9,6 +10,9 @@ export interface GetArticulosParams {
   page?: number
   pageSize?: number
   filter?: string
+  sortBy?: string
+  sortDirection?: 'asc' | 'desc'
+  isPage?: boolean
 }
 
 // Forma del body que espera el backend en POST y PUT
@@ -24,6 +28,11 @@ export interface ArticuloPayload {
 export async function getArticulos(params: GetArticulosParams = {}) {
   const { data } = await apiClient.get('/Articulos', { params })
   return articulosResponseSchema.parse(data)
+}
+
+export async function getArticuloById(id: number) {
+  const { data } = await apiClient.get(`/Articulos/${id}`)
+  return articuloDetalleResponseSchema.parse(data)
 }
 
 export async function createArticulo(payload: ArticuloPayload) {

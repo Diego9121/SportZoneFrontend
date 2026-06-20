@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ImageOff, Pencil, Plus, Search, Trash } from 'lucide-react'
+import { ImageOff, Pencil, Plus, QrCode, Search, Trash } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   AlertDialog,
@@ -99,7 +99,12 @@ export function ListArticulos() {
     setEditingArticulo(articulo)
     setFormOpen(true)
   }
+  function openQr(id: number) {
+    console.log('Generar QR para artículo ID:', id)
+    const url = `http://localhost:5176/api/Articulos/${id}`
+    window.open(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`, '_blank')
 
+  }
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -174,6 +179,14 @@ export function ListArticulos() {
                   onClick={() => openEdit(articulo)}
                 >
                   <Pencil />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  aria-label="Generar QR"
+                  onClick={() => openQr(articulo.id)}
+                >
+                  <QrCode />
                 </Button>
               </TableCell>
             </TableRow>

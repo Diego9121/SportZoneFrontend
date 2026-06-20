@@ -3,14 +3,13 @@ import {
   LayoutDashboard,
   Layers,
   List,
-  Package,
   ShoppingCart,
   Tags,
   Truck,
   Undo2,
   Users,
   Warehouse,
-  FactoryIcon,
+  QrCode,
 } from 'lucide-react'
 import type { NavGroup } from '@/types/nav'
 
@@ -24,22 +23,28 @@ export const sidebarMenu: NavGroup[] = [
     items: [
       { title: 'Categorías', url: '/categorias', icon: Tags },
       { title: 'Marcas', url: '/marcas', icon: BadgeCheck },
-      {
-        title: 'Artículos',
-        icon: Package,
-        items: [
-          { title: 'Listado', url: '/articulos', icon: List },
-          { title: 'Variantes', url: '/articulos/variantes', icon: Layers },
-          { title: 'Fabricantes', url: '/articulos/fabricantes', icon: FactoryIcon},
-        ],
-      },
     ],
   },
   {
     label: 'Inventario',
     items: [
-      { title: 'Almacenes', url: '/almacenes', icon: Warehouse },
-      { title: 'Compras', url: '/compras', icon: Truck },
+      {
+        title: 'Almacenes',
+        icon: Warehouse,
+        items: [
+          { title: 'Lista de Artículos', url: '/articulos', icon: List },
+          { title: 'Lista de Variantes', url: '/articulos/variantes', icon: Layers },
+          { title: 'Búsqueda de Artículos', url: '/almacenes/consulta', icon: QrCode },
+        ],
+      },
+      { title: 'Compras', icon: Truck, 
+
+        items: [
+          { title: 'Listado', url: '/compras', icon: List },
+          { title: 'Crear Compra', url: '/compras/crear', icon: ShoppingCart },
+          { title: 'Proveedores', url: '/compras/proveedores', icon: Truck },
+        ],
+       },
     ],
   },
   {

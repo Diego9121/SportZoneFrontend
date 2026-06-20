@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Form, Field as FormischField, reset, useField, useForm } from '@formisch/react'
 import type { SubmitHandler } from '@formisch/react'
 import { Plus } from 'lucide-react'
@@ -6,6 +6,14 @@ import { toast } from 'sonner'
 import * as v from 'valibot'
 
 import { Button } from '@/components/ui/button'
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from '@/components/ui/combobox'
 import {
   Dialog,
   DialogContent,
@@ -20,13 +28,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import ImageUploadField from '@/components/ImageUploadField'
 import FormCategoria from '@/modules/categoria/components/FormCategoria'
 import { useCategorias } from '@/modules/categoria/hooks/use-categorias'
 import FormMarca from '@/modules/marca/components/FormMarca'
@@ -59,7 +61,7 @@ const ArticuloFormSchema = v.object({
 
 interface FormArticuloProps {
   articulo?: Articulo
-  onSuccess?: () => void
+  onSuccess?: (articulo: Articulo) => void
 }
 
 function FormArticulo({ articulo, onSuccess }: FormArticuloProps) {
@@ -69,8 +71,8 @@ function FormArticulo({ articulo, onSuccess }: FormArticuloProps) {
 
   const { data: marcasData } = useMarcas(1, 100)
   const { data: categoriasData } = useCategorias(1, 100)
-  const marcas = marcasData?.data.items ?? []
-  const categorias = categoriasData?.data.items ?? []
+  const marcas = useMemo(() => marcasData?.data.items ?? [], [marcasData])
+  const categorias = useMemo(() => categoriasData?.data.items ?? [], [categoriasData])
 
   const form = useForm({
     schema: ArticuloFormSchema,
@@ -86,24 +88,20 @@ function FormArticulo({ articulo, onSuccess }: FormArticuloProps) {
 
   const categoriaField = useField(form, { path: ['categoriaId'] })
   const marcaField = useField(form, { path: ['marcaId'] })
+  const imagenField = useField(form, { path: ['imagen'] })
 
-  // Se aplican en un efecto (no directo en el callback de éxito del form anidado)
-  // porque ese callback corre dentro del ciclo de mutación de React Query del
-  // formulario hijo, y la actualización del campo se pierde si se llama ahí mismo.
-  const [pendingCategoriaId, setPendingCategoriaId] = useState<number | null>(null)
-  const [pendingMarcaId, setPendingMarcaId] = useState<number | null>(null)
-
-  useEffect(() => {
-    if (pendingCategoriaId === null) return
-    categoriaField.onChange(pendingCategoriaId)
-    setPendingCategoriaId(null)
-  }, [pendingCategoriaId, categoriaField])
-
-  useEffect(() => {
-    if (pendingMarcaId === null) return
-    marcaField.onChange(pendingMarcaId)
-    setPendingMarcaId(null)
-  }, [pendingMarcaId, marcaField])
+  const categoriaItems = useMemo(
+    () => categorias.map((categoria) => ({ value: categoria.id, label: categoria.nombre })),
+    [categorias],
+  )
+  const marcaItems = useMemo(
+    () => marcas.map((marca) => ({ value: marca.id, label: marca.nombre })),
+    [marcas],
+  )
+  const selectedCategoriaItem =
+    categoriaItems.find((item) => item.value === categoriaField.input) ?? null
+  const selectedMarcaItem =
+    marcaItems.find((item) => item.value === marcaField.input) ?? null
 
   const createArticulo = useCreateArticulo()
   const updateArticulo = useUpdateArticulo()
@@ -115,14 +113,14 @@ function FormArticulo({ articulo, onSuccess }: FormArticuloProps) {
       : createArticulo.mutateAsync(output)
 
     promise
-      .then(() => {
+      .then((response) => {
         toast.success(
           isEditing
             ? 'Artículo actualizado correctamente.'
             : 'Artículo creado correctamente.',
         )
         if (!isEditing) reset(form)
-        onSuccess?.()
+        onSuccess?.(response.data)
       })
       .catch(() => {
         toast.error('No se pudo guardar el artículo.')
@@ -135,25 +133,29 @@ function FormArticulo({ articulo, onSuccess }: FormArticuloProps) {
         <Field data-invalid={categoriaField.errors !== null}>
           <FieldLabel htmlFor="articulo-categoria">Categoría</FieldLabel>
           <div className="flex gap-2">
-            <Select
-              value={categoriaField.input ? String(categoriaField.input) : ''}
-              onValueChange={(value) => categoriaField.onChange(Number(value))}
+            <Combobox
+              items={categoriaItems}
+              value={selectedCategoriaItem}
+              onValueChange={(item) => categoriaField.onChange(item ? item.value : 0)}
+              isItemEqualToValue={(a, b) => a.value === b.value}
             >
-              <SelectTrigger
+              <ComboboxInput
                 id="articulo-categoria"
                 className="flex-1"
                 aria-invalid={categoriaField.errors !== null}
-              >
-                <SelectValue placeholder="Selecciona una categoría" />
-              </SelectTrigger>
-              <SelectContent>
-                {categorias.map((categoria) => (
-                  <SelectItem key={categoria.id} value={String(categoria.id)}>
-                    {categoria.nombre}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                placeholder="Selecciona una categoría"
+              />
+              <ComboboxContent>
+                <ComboboxEmpty>No se encontraron categorías.</ComboboxEmpty>
+                <ComboboxList>
+                  {(item) => (
+                    <ComboboxItem key={item.value} value={item}>
+                      {item.label}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
             <Button
               type="button"
               size="icon"
@@ -174,25 +176,29 @@ function FormArticulo({ articulo, onSuccess }: FormArticuloProps) {
         <Field data-invalid={marcaField.errors !== null}>
           <FieldLabel htmlFor="articulo-marca">Marca</FieldLabel>
           <div className="flex gap-2">
-            <Select
-              value={marcaField.input ? String(marcaField.input) : ''}
-              onValueChange={(value) => marcaField.onChange(Number(value))}
+            <Combobox
+              items={marcaItems}
+              value={selectedMarcaItem}
+              onValueChange={(item) => marcaField.onChange(item ? item.value : 0)}
+              isItemEqualToValue={(a, b) => a.value === b.value}
             >
-              <SelectTrigger
+              <ComboboxInput
                 id="articulo-marca"
                 className="flex-1"
                 aria-invalid={marcaField.errors !== null}
-              >
-                <SelectValue placeholder="Selecciona una marca" />
-              </SelectTrigger>
-              <SelectContent>
-                {marcas.map((marca) => (
-                  <SelectItem key={marca.id} value={String(marca.id)}>
-                    {marca.nombre}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                placeholder="Selecciona una marca"
+              />
+              <ComboboxContent>
+                <ComboboxEmpty>No se encontraron marcas.</ComboboxEmpty>
+                <ComboboxList>
+                  {(item) => (
+                    <ComboboxItem key={item.value} value={item}>
+                      {item.label}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
             <Button
               type="button"
               size="icon"
@@ -252,28 +258,22 @@ function FormArticulo({ articulo, onSuccess }: FormArticuloProps) {
           )}
         </FormischField>
 
-        <FormischField of={form} path={['imagen']}>
-          {(field) => (
-            <Field data-invalid={field.errors !== null}>
-              <FieldLabel htmlFor="articulo-imagen">Imagen</FieldLabel>
-              <Input
-                {...field.props}
-                id="articulo-imagen"
-                value={field.input ?? ''}
-                aria-invalid={field.errors !== null}
-                placeholder="URL de la imagen"
-              />
-              <FieldDescription>
-                URL de la imagen del artículo (por el momento solo URL).
-              </FieldDescription>
-              {field.errors && (
-                <FieldError
-                  errors={field.errors.map((message) => ({ message }))}
-                />
-              )}
-            </Field>
+        <Field data-invalid={imagenField.errors !== null}>
+          <FieldLabel htmlFor="articulo-imagen">Imagen</FieldLabel>
+          <ImageUploadField
+            value={imagenField.input ?? ''}
+            onChange={imagenField.onChange}
+            carpeta="articulos"
+          />
+          <FieldDescription>
+            Sube una foto desde la galería o tómala con la cámara.
+          </FieldDescription>
+          {imagenField.errors && (
+            <FieldError
+              errors={imagenField.errors.map((message) => ({ message }))}
+            />
           )}
-        </FormischField>
+        </Field>
 
         <FormischField of={form} path={['descripcion']}>
           {(field) => (
@@ -312,7 +312,7 @@ function FormArticulo({ articulo, onSuccess }: FormArticuloProps) {
           </DialogHeader>
           <FormCategoria
             onSuccess={(nuevaCategoria) => {
-              setPendingCategoriaId(nuevaCategoria.id)
+              categoriaField.onChange(nuevaCategoria.id)
               setCategoriaDialogOpen(false)
             }}
           />
@@ -326,7 +326,7 @@ function FormArticulo({ articulo, onSuccess }: FormArticuloProps) {
           </DialogHeader>
           <FormMarca
             onSuccess={(nuevaMarca) => {
-              setPendingMarcaId(nuevaMarca.id)
+              marcaField.onChange(nuevaMarca.id)
               setMarcaDialogOpen(false)
             }}
           />

@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import {
   createArticulo,
   deleteArticulo,
+  getArticuloById,
   getArticulos,
   updateArticulo,
   type ArticuloPayload,
@@ -42,7 +43,22 @@ export function useDeleteArticulo() {
 export function useArticulos(page: number, pageSize: number, filter?: string) {
   return useQuery({
     queryKey: ['articulos', page, pageSize, filter],
-    queryFn: () => getArticulos({ page, pageSize, filter }),
+    queryFn: () => getArticulos({ page, pageSize, filter, sortBy: 'id', sortDirection: 'desc' }),
     placeholderData: keepPreviousData,
+  })
+}
+//**********************************************OBTENER TODOS (para combobox/buscador)*/
+export function useAllArticulos() {
+  return useQuery({
+    queryKey: ['articulos', 'all'],
+    queryFn: () => getArticulos({ isPage: false }),
+  })
+}
+//**********************************************OBTENER DETALLE (con variantes)*/
+export function useArticuloDetalle(id: number | undefined) {
+  return useQuery({
+    queryKey: ['articulo-detalle', id],
+    queryFn: () => getArticuloById(id as number),
+    enabled: id !== undefined,
   })
 }

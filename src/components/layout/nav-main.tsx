@@ -35,8 +35,7 @@ export function NavMain({ groups }: { groups: NavGroup[] }) {
     activeParents,
   )
 
-  const isOpen = (title: string) =>
-    openItems.includes(title) || activeParents.includes(title)
+  const isOpen = (title: string) => openItems.includes(title)
 
   const toggleItem = (title: string) => {
     setOpenItems((current) =>
