@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ImageOff, Pencil, Plus, QrCode, Search, Trash } from 'lucide-react'
+import { Pencil, Plus, Search, Trash } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   AlertDialog,
@@ -47,71 +47,66 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group'
-import { useArticulos } from '@/modules/articulo/hooks/use-articulo'
-import type { Articulo } from '../schemas/articulo.schema'
-import { useDeleteArticulo } from '../hooks/use-articulo'
-import FormArticulo from './FormArticulo'
+import { useProveedores } from '@/modules/proveedor/hooks/use-proveedor'
+import type { Proveedor } from '../schemas/proveedor.schema'
+import { useDeleteProveedor } from '../hooks/use-proveedor'
+import FormProveedor from './FormProveedor'
 
-export function ListArticulos() {
+export function ListProveedores() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
   const [filter, setFilter] = useState<string | undefined>(undefined)
-  const { data, isLoading, isError, error } = useArticulos(page, pageSize, filter)
+  const { data, isLoading, isError, error } = useProveedores(page, pageSize, filter)
   const [formOpen, setFormOpen] = useState(false)
-  const [deletingArticulo, setDeletingArticulo] = useState<Articulo | null>(null)
-  const deleteArticuloId = useDeleteArticulo()
-  const [editingArticulo, setEditingArticulo] = useState<Articulo | undefined>(
+  const [deletingProveedor, setDeletingProveedor] = useState<Proveedor | null>(null)
+  const deleteProveedorId = useDeleteProveedor()
+  const [editingProveedor, setEditingProveedor] = useState<Proveedor | undefined>(
     undefined,
   )
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Cargando artículos...</p>
+    return <p className="text-sm text-muted-foreground">Cargando proveedores...</p>
   }
 
   if (isError) {
     return <p className="text-sm text-destructive">{error.message}</p>
   }
 
-  const articulos = data?.data.items ?? []
+  const proveedores = data?.data.items ?? []
   const totalPages = data?.data.totalPages ?? 1
 
-  function openDelete(articulo: Articulo) {
-    setDeletingArticulo(articulo)
+  function openDelete(proveedor: Proveedor) {
+    setDeletingProveedor(proveedor)
   }
   function confirmDelete() {
-    if (!deletingArticulo) return
-    deleteArticuloId.mutate(deletingArticulo.id, {
+    if (!deletingProveedor) return
+    deleteProveedorId.mutate(deletingProveedor.id, {
       onSuccess: () => {
-        toast.success('Artículo eliminado correctamente.')
-        setDeletingArticulo(null)
+        toast.success('Proveedor eliminado correctamente.')
+        setDeletingProveedor(null)
       },
       onError: () => {
-        toast.error('No se pudo eliminar el artículo.')
+        toast.error('No se pudo eliminar el proveedor.')
       },
     })
   }
   function openCreate() {
-    setEditingArticulo(undefined)
+    setEditingProveedor(undefined)
     setFormOpen(true)
   }
 
-  function openEdit(articulo: Articulo) {
-    setEditingArticulo(articulo)
+  function openEdit(proveedor: Proveedor) {
+    setEditingProveedor(proveedor)
     setFormOpen(true)
   }
-  function openQr(id: number) {
-    console.log('Generar QR para artículo ID:', id)
-    const url = `http://localhost:5176/api/Articulos/${id}`
-    window.open(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`, '_blank')
 
-  }
   return (
     <div>
       <div className="flex items-center justify-between">
         <InputGroup className="w-[300px]">
           <InputGroupInput
             id="input-group-url"
-            placeholder="Buscar artículos..."
+            placeholder="Buscar proveedores..."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           />
@@ -121,72 +116,52 @@ export function ListArticulos() {
         </InputGroup>
         <Button onClick={openCreate}>
           <Plus />
-          Agregar Modelo
+          Nuevo proveedor
         </Button>
       </div>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Imagen</TableHead>
-            <TableHead>Código</TableHead>
             <TableHead>Nombre</TableHead>
-            <TableHead>Categoría</TableHead>
-            <TableHead>Marca</TableHead>
-            <TableHead>Variantes</TableHead>
-            <TableHead>Stock</TableHead>
+            <TableHead>Contacto</TableHead>
+            <TableHead>Teléfono</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Dirección</TableHead>
+            <TableHead>Fecha de Creación</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {articulos.map((articulo) => (
-            <TableRow key={articulo.id}>
-              <TableCell>
-                {articulo.imagen ? (
-                  <img
-                    src={articulo.imagen}
-                    alt={articulo.nombre}
-                    className="w-10 h-10 object-contain"
-                  />
-                ) : (
-                  <div className="w-10 h-10 bg-muted flex items-center justify-center">
-                    <ImageOff className="w-5 h-5 text-muted-foreground" />
-                  </div>
-                )}
-              </TableCell>
-              <TableCell>{articulo.codigo}</TableCell>
-              <TableCell>{articulo.nombre}</TableCell>
+          {proveedores.map((proveedor) => (
+            <TableRow key={proveedor.id}>
               <TableCell>
                 <span className="inline-flex items-center rounded-md bg-blue-400/10 px-2 py-1 text-xs font-medium text-blue-400 inset-ring inset-ring-blue-400/30">
-                  {articulo.categoriaNombre}
+                  {proveedor.nombre}
                 </span>
               </TableCell>
-              <TableCell>{articulo.marcaNombre}</TableCell>
-              <TableCell>{articulo.totalVariantes}</TableCell>
-              <TableCell>{articulo.stockTotal}</TableCell>
+              <TableCell>{proveedor.contacto ?? '-'}</TableCell>
+              <TableCell>{proveedor.telefono ?? '-'}</TableCell>
+              <TableCell>{proveedor.email ?? '-'}</TableCell>
+              <TableCell>{proveedor.direccion ?? '-'}</TableCell>
+              <TableCell>
+                {new Date(proveedor.createdAt).toLocaleDateString()}
+              </TableCell>
               <TableCell className="text-right">
                 <Button
                   size="icon"
                   variant="ghost"
-                  aria-label="Eliminar artículo"
-                  onClick={() => openDelete(articulo)}
+                  aria-label="Eliminar proveedor"
+                  onClick={() => openDelete(proveedor)}
                 >
                   <Trash />
                 </Button>
                 <Button
                   size="icon"
                   variant="ghost"
-                  aria-label="Editar artículo"
-                  onClick={() => openEdit(articulo)}
+                  aria-label="Editar proveedor"
+                  onClick={() => openEdit(proveedor)}
                 >
                   <Pencil />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  aria-label="Generar QR"
-                  onClick={() => openQr(articulo.id)}
-                >
-                  <QrCode />
                 </Button>
               </TableCell>
             </TableRow>
@@ -241,16 +216,16 @@ export function ListArticulos() {
         </PaginationContent>
       </Pagination>
       <AlertDialog
-        open={deletingArticulo !== null}
+        open={deletingProveedor !== null}
         onOpenChange={(open) => {
-          if (!open) setDeletingArticulo(null)
+          if (!open) setDeletingProveedor(null)
         }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar artículo?</AlertDialogTitle>
+            <AlertDialogTitle>¿Eliminar proveedor?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción eliminará el artículo "{deletingArticulo?.nombre}" y
+              Esta acción eliminará el proveedor "{deletingProveedor?.nombre}" y
               no se puede deshacer.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -258,7 +233,7 @@ export function ListArticulos() {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
-              disabled={deleteArticuloId.isPending}
+              disabled={deleteProveedorId.isPending}
             >
               Eliminar
             </AlertDialogAction>
@@ -269,11 +244,11 @@ export function ListArticulos() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editingArticulo ? 'Editar Modelo' : 'Agregar Modelo'}
+              {editingProveedor ? 'Editar proveedor' : 'Nuevo proveedor'}
             </DialogTitle>
           </DialogHeader>
-          <FormArticulo
-            articulo={editingArticulo}
+          <FormProveedor
+            proveedor={editingProveedor}
             onSuccess={() => setFormOpen(false)}
           />
         </DialogContent>

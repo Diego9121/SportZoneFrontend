@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Pencil, Plus, Search, Trash } from 'lucide-react'
+import { Activity, Pencil, Plus, Search, Trash } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   AlertDialog,
@@ -60,6 +60,7 @@ import { useArticulos } from '@/modules/articulo/hooks/use-articulo'
 import { useDeleteVariante, useVariantes } from '@/modules/variante/hooks/use-variante'
 import type { Variante } from '../schemas/variante.schema'
 import FormVariante from './FormVariante'
+import MovimientoStockDrawer from './MovimientoStockDrawer'
 
 export function ListVariantes() {
   const [page, setPage] = useState(1)
@@ -71,6 +72,7 @@ export function ListVariantes() {
   const [deletingVariante, setDeletingVariante] = useState<Variante | null>(null)
   const deleteVarianteId = useDeleteVariante()
   const [editingVariante, setEditingVariante] = useState<Variante | undefined>(undefined)
+  const [movimientoVariante, setMovimientoVariante] = useState<Variante | null>(null)
 
   const { data: articulosData } = useArticulos(1, 100)
   const articulos = useMemo(() => articulosData?.data.items ?? [], [articulosData])
@@ -160,7 +162,7 @@ export function ListVariantes() {
         </div>
         <Button onClick={openCreate}>
           <Plus />
-          Nueva variante
+          Agregar Talla/Color
         </Button>
       </div>
       <Table>
@@ -194,12 +196,20 @@ export function ListVariantes() {
               <TableCell>
                 <div className="flex items-center gap-2">
                   <span>{variante.stock}</span>
-                  {variante.stockBajo && <Badge variant="destructive">Stock bajo</Badge>}
+                  {variante.stock === 0 ? <Badge variant="destructive">Agotado</Badge> : variante.stock <= variante.stockMinimo ? <Badge variant="outline" className="bg-amber-400/30 text-amber-600">Stock bajo</Badge> : null}
                 </div>
               </TableCell>
               <TableCell>{variante.precioVenta}</TableCell>
               <TableCell>{variante.precioCosto}</TableCell>
               <TableCell className="text-right">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  aria-label="Ver movimiento de stock"
+                  onClick={() => setMovimientoVariante(variante)}
+                >
+                  <Activity />
+                </Button>
                 <Button
                   size="icon"
                   variant="ghost"
@@ -295,10 +305,10 @@ export function ListVariantes() {
         </AlertDialogContent>
       </AlertDialog>
       <Dialog open={formOpen} onOpenChange={setFormOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>
-              {editingVariante ? 'Editar variante' : 'Nueva variante'}
+              {editingVariante ? 'Editar Talla/Color' : 'Agregar Talla/Color'}
             </DialogTitle>
           </DialogHeader>
           <FormVariante
@@ -307,6 +317,18 @@ export function ListVariantes() {
           />
         </DialogContent>
       </Dialog>
+      <MovimientoStockDrawer
+        varianteId={movimientoVariante?.id}
+        varianteDescripcion={
+          movimientoVariante
+            ? `${movimientoVariante.articuloNombre} - ${movimientoVariante.color ?? ''}`
+            : undefined
+        }
+        open={movimientoVariante !== null}
+        onOpenChange={(open) => {
+          if (!open) setMovimientoVariante(null)
+        }}
+      />
     </div>
   )
 }

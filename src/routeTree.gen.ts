@@ -9,24 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VentasRouteImport } from './routes/ventas'
 import { Route as MarcasRouteImport } from './routes/marcas'
 import { Route as DevolucionesRouteImport } from './routes/devoluciones'
-import { Route as ComprasRouteImport } from './routes/compras'
 import { Route as ClientesRouteImport } from './routes/clientes'
 import { Route as CategoriasRouteImport } from './routes/categorias'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VentasIndexRouteImport } from './routes/ventas/index'
+import { Route as ComprasIndexRouteImport } from './routes/compras/index'
 import { Route as ArticulosIndexRouteImport } from './routes/articulos/index'
 import { Route as AlmacenesIndexRouteImport } from './routes/almacenes/index'
+import { Route as VentasCrearRouteImport } from './routes/ventas/crear'
+import { Route as ComprasProveedoresRouteImport } from './routes/compras/proveedores'
+import { Route as ComprasCrearRouteImport } from './routes/compras/crear'
 import { Route as ArticulosVariantesRouteImport } from './routes/articulos/variantes'
 import { Route as ArticulosFabricantesRouteImport } from './routes/articulos/fabricantes'
 import { Route as AlmacenesConsultaRouteImport } from './routes/almacenes/consulta'
 
-const VentasRoute = VentasRouteImport.update({
-  id: '/ventas',
-  path: '/ventas',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MarcasRoute = MarcasRouteImport.update({
   id: '/marcas',
   path: '/marcas',
@@ -35,11 +33,6 @@ const MarcasRoute = MarcasRouteImport.update({
 const DevolucionesRoute = DevolucionesRouteImport.update({
   id: '/devoluciones',
   path: '/devoluciones',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ComprasRoute = ComprasRouteImport.update({
-  id: '/compras',
-  path: '/compras',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClientesRoute = ClientesRouteImport.update({
@@ -57,6 +50,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VentasIndexRoute = VentasIndexRouteImport.update({
+  id: '/ventas/',
+  path: '/ventas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComprasIndexRoute = ComprasIndexRouteImport.update({
+  id: '/compras/',
+  path: '/compras/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArticulosIndexRoute = ArticulosIndexRouteImport.update({
   id: '/articulos/',
   path: '/articulos/',
@@ -65,6 +68,21 @@ const ArticulosIndexRoute = ArticulosIndexRouteImport.update({
 const AlmacenesIndexRoute = AlmacenesIndexRouteImport.update({
   id: '/almacenes/',
   path: '/almacenes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VentasCrearRoute = VentasCrearRouteImport.update({
+  id: '/ventas/crear',
+  path: '/ventas/crear',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComprasProveedoresRoute = ComprasProveedoresRouteImport.update({
+  id: '/compras/proveedores',
+  path: '/compras/proveedores',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComprasCrearRoute = ComprasCrearRouteImport.update({
+  id: '/compras/crear',
+  path: '/compras/crear',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArticulosVariantesRoute = ArticulosVariantesRouteImport.update({
@@ -87,44 +105,53 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/categorias': typeof CategoriasRoute
   '/clientes': typeof ClientesRoute
-  '/compras': typeof ComprasRoute
   '/devoluciones': typeof DevolucionesRoute
   '/marcas': typeof MarcasRoute
-  '/ventas': typeof VentasRoute
   '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
   '/articulos/variantes': typeof ArticulosVariantesRoute
+  '/compras/crear': typeof ComprasCrearRoute
+  '/compras/proveedores': typeof ComprasProveedoresRoute
+  '/ventas/crear': typeof VentasCrearRoute
   '/almacenes/': typeof AlmacenesIndexRoute
   '/articulos/': typeof ArticulosIndexRoute
+  '/compras/': typeof ComprasIndexRoute
+  '/ventas/': typeof VentasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/categorias': typeof CategoriasRoute
   '/clientes': typeof ClientesRoute
-  '/compras': typeof ComprasRoute
   '/devoluciones': typeof DevolucionesRoute
   '/marcas': typeof MarcasRoute
-  '/ventas': typeof VentasRoute
   '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
   '/articulos/variantes': typeof ArticulosVariantesRoute
+  '/compras/crear': typeof ComprasCrearRoute
+  '/compras/proveedores': typeof ComprasProveedoresRoute
+  '/ventas/crear': typeof VentasCrearRoute
   '/almacenes': typeof AlmacenesIndexRoute
   '/articulos': typeof ArticulosIndexRoute
+  '/compras': typeof ComprasIndexRoute
+  '/ventas': typeof VentasIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/categorias': typeof CategoriasRoute
   '/clientes': typeof ClientesRoute
-  '/compras': typeof ComprasRoute
   '/devoluciones': typeof DevolucionesRoute
   '/marcas': typeof MarcasRoute
-  '/ventas': typeof VentasRoute
   '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
   '/articulos/variantes': typeof ArticulosVariantesRoute
+  '/compras/crear': typeof ComprasCrearRoute
+  '/compras/proveedores': typeof ComprasProveedoresRoute
+  '/ventas/crear': typeof VentasCrearRoute
   '/almacenes/': typeof AlmacenesIndexRoute
   '/articulos/': typeof ArticulosIndexRoute
+  '/compras/': typeof ComprasIndexRoute
+  '/ventas/': typeof VentasIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -132,69 +159,74 @@ export interface FileRouteTypes {
     | '/'
     | '/categorias'
     | '/clientes'
-    | '/compras'
     | '/devoluciones'
     | '/marcas'
-    | '/ventas'
     | '/almacenes/consulta'
     | '/articulos/fabricantes'
     | '/articulos/variantes'
+    | '/compras/crear'
+    | '/compras/proveedores'
+    | '/ventas/crear'
     | '/almacenes/'
     | '/articulos/'
+    | '/compras/'
+    | '/ventas/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/categorias'
     | '/clientes'
-    | '/compras'
     | '/devoluciones'
     | '/marcas'
-    | '/ventas'
     | '/almacenes/consulta'
     | '/articulos/fabricantes'
     | '/articulos/variantes'
+    | '/compras/crear'
+    | '/compras/proveedores'
+    | '/ventas/crear'
     | '/almacenes'
     | '/articulos'
+    | '/compras'
+    | '/ventas'
   id:
     | '__root__'
     | '/'
     | '/categorias'
     | '/clientes'
-    | '/compras'
     | '/devoluciones'
     | '/marcas'
-    | '/ventas'
     | '/almacenes/consulta'
     | '/articulos/fabricantes'
     | '/articulos/variantes'
+    | '/compras/crear'
+    | '/compras/proveedores'
+    | '/ventas/crear'
     | '/almacenes/'
     | '/articulos/'
+    | '/compras/'
+    | '/ventas/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CategoriasRoute: typeof CategoriasRoute
   ClientesRoute: typeof ClientesRoute
-  ComprasRoute: typeof ComprasRoute
   DevolucionesRoute: typeof DevolucionesRoute
   MarcasRoute: typeof MarcasRoute
-  VentasRoute: typeof VentasRoute
   AlmacenesConsultaRoute: typeof AlmacenesConsultaRoute
   ArticulosFabricantesRoute: typeof ArticulosFabricantesRoute
   ArticulosVariantesRoute: typeof ArticulosVariantesRoute
+  ComprasCrearRoute: typeof ComprasCrearRoute
+  ComprasProveedoresRoute: typeof ComprasProveedoresRoute
+  VentasCrearRoute: typeof VentasCrearRoute
   AlmacenesIndexRoute: typeof AlmacenesIndexRoute
   ArticulosIndexRoute: typeof ArticulosIndexRoute
+  ComprasIndexRoute: typeof ComprasIndexRoute
+  VentasIndexRoute: typeof VentasIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/ventas': {
-      id: '/ventas'
-      path: '/ventas'
-      fullPath: '/ventas'
-      preLoaderRoute: typeof VentasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/marcas': {
       id: '/marcas'
       path: '/marcas'
@@ -207,13 +239,6 @@ declare module '@tanstack/react-router' {
       path: '/devoluciones'
       fullPath: '/devoluciones'
       preLoaderRoute: typeof DevolucionesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/compras': {
-      id: '/compras'
-      path: '/compras'
-      fullPath: '/compras'
-      preLoaderRoute: typeof ComprasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/clientes': {
@@ -237,6 +262,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ventas/': {
+      id: '/ventas/'
+      path: '/ventas'
+      fullPath: '/ventas/'
+      preLoaderRoute: typeof VentasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compras/': {
+      id: '/compras/'
+      path: '/compras'
+      fullPath: '/compras/'
+      preLoaderRoute: typeof ComprasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/articulos/': {
       id: '/articulos/'
       path: '/articulos'
@@ -249,6 +288,27 @@ declare module '@tanstack/react-router' {
       path: '/almacenes'
       fullPath: '/almacenes/'
       preLoaderRoute: typeof AlmacenesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ventas/crear': {
+      id: '/ventas/crear'
+      path: '/ventas/crear'
+      fullPath: '/ventas/crear'
+      preLoaderRoute: typeof VentasCrearRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compras/proveedores': {
+      id: '/compras/proveedores'
+      path: '/compras/proveedores'
+      fullPath: '/compras/proveedores'
+      preLoaderRoute: typeof ComprasProveedoresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compras/crear': {
+      id: '/compras/crear'
+      path: '/compras/crear'
+      fullPath: '/compras/crear'
+      preLoaderRoute: typeof ComprasCrearRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/articulos/variantes': {
@@ -279,15 +339,18 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CategoriasRoute: CategoriasRoute,
   ClientesRoute: ClientesRoute,
-  ComprasRoute: ComprasRoute,
   DevolucionesRoute: DevolucionesRoute,
   MarcasRoute: MarcasRoute,
-  VentasRoute: VentasRoute,
   AlmacenesConsultaRoute: AlmacenesConsultaRoute,
   ArticulosFabricantesRoute: ArticulosFabricantesRoute,
   ArticulosVariantesRoute: ArticulosVariantesRoute,
+  ComprasCrearRoute: ComprasCrearRoute,
+  ComprasProveedoresRoute: ComprasProveedoresRoute,
+  VentasCrearRoute: VentasCrearRoute,
   AlmacenesIndexRoute: AlmacenesIndexRoute,
   ArticulosIndexRoute: ArticulosIndexRoute,
+  ComprasIndexRoute: ComprasIndexRoute,
+  VentasIndexRoute: VentasIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

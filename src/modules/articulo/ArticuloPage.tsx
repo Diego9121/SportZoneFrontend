@@ -5,7 +5,7 @@ function ArticuloPage() {
   return (
     <div className="flex h-full flex-col gap-4 p-4">
       <PageHeader
-        title="Artículos"
+        title="Lista de Modelos"
         description="Listado de modelos: marca, descripción y precio."
       />
       <ListArticulos />

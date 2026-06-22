@@ -68,6 +68,7 @@ interface NumberFieldProps {
   id: string
   label: string
   description?: string
+  resetKey?: number
   field: {
     input: number | undefined
     errors: [string, ...string[]] | null
@@ -75,17 +76,27 @@ interface NumberFieldProps {
   }
 }
 
-function NumberField({ id, label, description, field }: NumberFieldProps) {
-  const displayValue =
-    typeof field.input === 'number' && !Number.isNaN(field.input) ? field.input : ''
+function numberOrEmpty(value: number | undefined) {
+  return typeof value === 'number' && !Number.isNaN(value) ? value : ''
+}
 
+function NumberField({ id, label, description, resetKey, field }: NumberFieldProps) {
   return (
     <Field data-invalid={field.errors !== null}>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      {/*
+        Input no controlado: si fuera `value={...}` controlado y convirtiéramos
+        el texto a número en cada tecla, escribir un decimal (ej. "320.5") se
+        rompe — al tipear el punto, Number("320.") redondea a 320 y el
+        re-render borra el punto que se acaba de escribir. Con `defaultValue`
+        el navegador es dueño del texto mientras se escribe; `key` fuerza un
+        remount (releyendo el valor actual) cuando el form se resetea.
+      */}
       <Input
+        key={resetKey}
         id={id}
         type="number"
-        value={displayValue}
+        defaultValue={numberOrEmpty(field.input)}
         onChange={(e) =>
           field.onChange(e.target.value === '' ? Number.NaN : Number(e.target.value))
         }
@@ -101,12 +112,13 @@ function NumberField({ id, label, description, field }: NumberFieldProps) {
 
 interface FormVarianteProps {
   variante?: Variante
-  onSuccess?: () => void
+  onSuccess?: (variante: Variante) => void
 }
 
 function FormVariante({ variante, onSuccess }: FormVarianteProps) {
   const isEditing = variante !== undefined
   const [articuloDialogOpen, setArticuloDialogOpen] = useState(false)
+  const [resetVersion, setResetVersion] = useState(0)
 
   const { data: articulosData } = useArticulos(1, 100)
   const articulos = useMemo(() => articulosData?.data.items ?? [], [articulosData])
@@ -152,30 +164,33 @@ function FormVariante({ variante, onSuccess }: FormVarianteProps) {
   const handleSubmit: SubmitHandler<typeof VarianteFormSchema> = (output) => {
     const promise = isEditing
       ? updateVariante.mutateAsync({
-          id: variante.id,
-          payload: {
-            tallaUs: output.tallaUs,
-            tallaEu: output.tallaEu,
-            tallaUk: output.tallaUk,
-            tallaCm: output.tallaCm,
-            color: output.color,
-            codigoBarras: output.codigoBarras,
-            stockMinimo: output.stockMinimo,
-            precioVenta: output.precioVenta,
-            precioCosto: output.precioCosto,
-          } satisfies VarianteUpdatePayload,
-        })
+        id: variante.id,
+        payload: {
+          tallaUs: output.tallaUs,
+          tallaEu: output.tallaEu,
+          tallaUk: output.tallaUk,
+          tallaCm: output.tallaCm,
+          color: output.color,
+          codigoBarras: output.codigoBarras,
+          stockMinimo: output.stockMinimo,
+          precioVenta: output.precioVenta,
+          precioCosto: output.precioCosto,
+        } satisfies VarianteUpdatePayload,
+      })
       : createVariante.mutateAsync(output satisfies VarianteCreatePayload)
 
     promise
-      .then(() => {
+      .then((response) => {
         toast.success(
           isEditing
             ? 'Variante actualizada correctamente.'
             : 'Variante creada correctamente.',
         )
-        if (!isEditing) reset(form)
-        onSuccess?.()
+        if (!isEditing) {
+          reset(form)
+          setResetVersion((v) => v + 1)
+        }
+        onSuccess?.(response.data)
       })
       .catch(() => {
         toast.error('No se pudo guardar la variante.')
@@ -216,7 +231,7 @@ function FormVariante({ variante, onSuccess }: FormVarianteProps) {
               type="button"
               size="icon"
               variant="outline"
-              aria-label="Nuevo artículo"
+              aria-label="Nuevo Modelo"
               disabled={isEditing}
               onClick={() => setArticuloDialogOpen(true)}
             >
@@ -359,21 +374,44 @@ function FormVariante({ variante, onSuccess }: FormVarianteProps) {
 
         <div className="grid grid-cols-2 gap-4">
           {!isEditing && (
-            <NumberField id="variante-stock" label="Stock inicial" field={stockField} />
+            <NumberField
+              id="variante-stock"
+              label="Stock inicial"
+              resetKey={resetVersion}
+              field={stockField}
+            />
           )}
           <NumberField
             id="variante-stock-minimo"
             label="Stock mínimo"
             description="Por debajo de este valor se marca como stock bajo."
+            resetKey={resetVersion}
             field={stockMinimoField}
           />
-          <NumberField id="variante-precio-venta" label="Precio de venta" field={precioVentaField} />
-          <NumberField id="variante-precio-costo" label="Precio de costo" field={precioCostoField} />
+          <NumberField
+            id="variante-precio-venta"
+            label="Precio de venta Bs."
+            resetKey={resetVersion}
+            field={precioVentaField}
+          />
+          <NumberField
+            id="variante-precio-costo"
+            label="Precio de costo Bs."
+            resetKey={resetVersion}
+            field={precioCostoField}
+          />
         </div>
       </FieldGroup>
 
       <div className="mt-6 flex justify-end gap-2">
-        <Button type="button" variant="outline" onClick={() => reset(form)}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => {
+            reset(form)
+            setResetVersion((v) => v + 1)
+          }}
+        >
           Limpiar
         </Button>
         <Button type="submit" disabled={isSubmitting}>
@@ -384,7 +422,7 @@ function FormVariante({ variante, onSuccess }: FormVarianteProps) {
       <Dialog open={articuloDialogOpen} onOpenChange={setArticuloDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Nuevo artículo</DialogTitle>
+            <DialogTitle>Nuevo Modelo</DialogTitle>
           </DialogHeader>
           <FormArticulo
             onSuccess={(nuevoArticulo) => {

@@ -1,5 +1,7 @@
 import { apiClient } from '@/lib/api-client'
+import { movimientosStockResponseSchema } from '@/modules/variante/schemas/movimiento-stock.schema'
 import {
+  varianteCatalogoResponseSchema,
   varianteResponseSchema,
   variantesResponseSchema,
 } from '@/modules/variante/schemas/variante.schema'
@@ -66,4 +68,21 @@ export async function updateVariante(id: number, payload: VarianteUpdatePayload)
 export async function deleteVariante(id: number) {
   // DELETE no devuelve `data`, solo { success, message }, por eso no parseamos nada
   await apiClient.delete(`/ArticuloVariantes/${id}`)
+}
+
+// Parámetros del catálogo del POS
+export interface GetCatalogoVariantesParams {
+  filter?: string
+  stock?: number
+  isPage?: boolean
+}
+
+export async function getCatalogoVariantes(params: GetCatalogoVariantesParams = {}) {
+  const { data } = await apiClient.get('/ArticuloVariantes/catalogo', { params })
+  return varianteCatalogoResponseSchema.parse(data)
+}
+
+export async function getMovimientosStock(varianteId: number) {
+  const { data } = await apiClient.get(`/MovimientosStock/${varianteId}`)
+  return movimientosStockResponseSchema.parse(data)
 }

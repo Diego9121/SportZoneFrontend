@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ImageOff, Pencil, Plus, QrCode, Search, Trash } from 'lucide-react'
+import { Pencil, Plus, Search, Trash } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   AlertDialog,
@@ -47,71 +47,66 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group'
-import { useArticulos } from '@/modules/articulo/hooks/use-articulo'
-import type { Articulo } from '../schemas/articulo.schema'
-import { useDeleteArticulo } from '../hooks/use-articulo'
-import FormArticulo from './FormArticulo'
+import { useClientes } from '@/modules/cliente/hooks/use-cliente'
+import type { Cliente } from '../schemas/cliente.schema'
+import { useDeleteCliente } from '../hooks/use-cliente'
+import FormCliente from './FormCliente'
 
-export function ListArticulos() {
+export function ListClientes() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
   const [filter, setFilter] = useState<string | undefined>(undefined)
-  const { data, isLoading, isError, error } = useArticulos(page, pageSize, filter)
+  const { data, isLoading, isError, error } = useClientes(page, pageSize, filter)
   const [formOpen, setFormOpen] = useState(false)
-  const [deletingArticulo, setDeletingArticulo] = useState<Articulo | null>(null)
-  const deleteArticuloId = useDeleteArticulo()
-  const [editingArticulo, setEditingArticulo] = useState<Articulo | undefined>(
+  const [deletingCliente, setDeletingCliente] = useState<Cliente | null>(null)
+  const deleteClienteId = useDeleteCliente()
+  const [editingCliente, setEditingCliente] = useState<Cliente | undefined>(
     undefined,
   )
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Cargando artículos...</p>
+    return <p className="text-sm text-muted-foreground">Cargando clientes...</p>
   }
 
   if (isError) {
     return <p className="text-sm text-destructive">{error.message}</p>
   }
 
-  const articulos = data?.data.items ?? []
+  const clientes = data?.data.items ?? []
   const totalPages = data?.data.totalPages ?? 1
 
-  function openDelete(articulo: Articulo) {
-    setDeletingArticulo(articulo)
+  function openDelete(cliente: Cliente) {
+    setDeletingCliente(cliente)
   }
   function confirmDelete() {
-    if (!deletingArticulo) return
-    deleteArticuloId.mutate(deletingArticulo.id, {
+    if (!deletingCliente) return
+    deleteClienteId.mutate(deletingCliente.id, {
       onSuccess: () => {
-        toast.success('Artículo eliminado correctamente.')
-        setDeletingArticulo(null)
+        toast.success('Cliente eliminado correctamente.')
+        setDeletingCliente(null)
       },
       onError: () => {
-        toast.error('No se pudo eliminar el artículo.')
+        toast.error('No se pudo eliminar el cliente.')
       },
     })
   }
   function openCreate() {
-    setEditingArticulo(undefined)
+    setEditingCliente(undefined)
     setFormOpen(true)
   }
 
-  function openEdit(articulo: Articulo) {
-    setEditingArticulo(articulo)
+  function openEdit(cliente: Cliente) {
+    setEditingCliente(cliente)
     setFormOpen(true)
   }
-  function openQr(id: number) {
-    console.log('Generar QR para artículo ID:', id)
-    const url = `http://localhost:5176/api/Articulos/${id}`
-    window.open(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`, '_blank')
 
-  }
   return (
     <div>
       <div className="flex items-center justify-between">
         <InputGroup className="w-[300px]">
           <InputGroupInput
             id="input-group-url"
-            placeholder="Buscar artículos..."
+            placeholder="Buscar clientes..."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           />
@@ -121,72 +116,50 @@ export function ListArticulos() {
         </InputGroup>
         <Button onClick={openCreate}>
           <Plus />
-          Agregar Modelo
+          Nuevo cliente
         </Button>
       </div>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Imagen</TableHead>
-            <TableHead>Código</TableHead>
             <TableHead>Nombre</TableHead>
-            <TableHead>Categoría</TableHead>
-            <TableHead>Marca</TableHead>
-            <TableHead>Variantes</TableHead>
-            <TableHead>Stock</TableHead>
+            <TableHead>Tipo doc.</TableHead>
+            <TableHead>N° documento</TableHead>
+            <TableHead>Teléfono</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Dirección</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {articulos.map((articulo) => (
-            <TableRow key={articulo.id}>
-              <TableCell>
-                {articulo.imagen ? (
-                  <img
-                    src={articulo.imagen}
-                    alt={articulo.nombre}
-                    className="w-10 h-10 object-contain"
-                  />
-                ) : (
-                  <div className="w-10 h-10 bg-muted flex items-center justify-center">
-                    <ImageOff className="w-5 h-5 text-muted-foreground" />
-                  </div>
-                )}
-              </TableCell>
-              <TableCell>{articulo.codigo}</TableCell>
-              <TableCell>{articulo.nombre}</TableCell>
+          {clientes.map((cliente) => (
+            <TableRow key={cliente.id}>
               <TableCell>
                 <span className="inline-flex items-center rounded-md bg-blue-400/10 px-2 py-1 text-xs font-medium text-blue-400 inset-ring inset-ring-blue-400/30">
-                  {articulo.categoriaNombre}
+                  {cliente.nombre}
                 </span>
               </TableCell>
-              <TableCell>{articulo.marcaNombre}</TableCell>
-              <TableCell>{articulo.totalVariantes}</TableCell>
-              <TableCell>{articulo.stockTotal}</TableCell>
+              <TableCell>{cliente.tipoDocumento}</TableCell>
+              <TableCell>{cliente.documento}</TableCell>
+              <TableCell>{cliente.telefono ?? '-'}</TableCell>
+              <TableCell>{cliente.email ?? '-'}</TableCell>
+              <TableCell>{cliente.direccion ?? '-'}</TableCell>
               <TableCell className="text-right">
                 <Button
                   size="icon"
                   variant="ghost"
-                  aria-label="Eliminar artículo"
-                  onClick={() => openDelete(articulo)}
+                  aria-label="Eliminar cliente"
+                  onClick={() => openDelete(cliente)}
                 >
                   <Trash />
                 </Button>
                 <Button
                   size="icon"
                   variant="ghost"
-                  aria-label="Editar artículo"
-                  onClick={() => openEdit(articulo)}
+                  aria-label="Editar cliente"
+                  onClick={() => openEdit(cliente)}
                 >
                   <Pencil />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  aria-label="Generar QR"
-                  onClick={() => openQr(articulo.id)}
-                >
-                  <QrCode />
                 </Button>
               </TableCell>
             </TableRow>
@@ -241,16 +214,16 @@ export function ListArticulos() {
         </PaginationContent>
       </Pagination>
       <AlertDialog
-        open={deletingArticulo !== null}
+        open={deletingCliente !== null}
         onOpenChange={(open) => {
-          if (!open) setDeletingArticulo(null)
+          if (!open) setDeletingCliente(null)
         }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar artículo?</AlertDialogTitle>
+            <AlertDialogTitle>¿Eliminar cliente?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción eliminará el artículo "{deletingArticulo?.nombre}" y
+              Esta acción eliminará al cliente "{deletingCliente?.nombre}" y
               no se puede deshacer.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -258,7 +231,7 @@ export function ListArticulos() {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
-              disabled={deleteArticuloId.isPending}
+              disabled={deleteClienteId.isPending}
             >
               Eliminar
             </AlertDialogAction>
@@ -269,11 +242,11 @@ export function ListArticulos() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editingArticulo ? 'Editar Modelo' : 'Agregar Modelo'}
+              {editingCliente ? 'Editar cliente' : 'Nuevo cliente'}
             </DialogTitle>
           </DialogHeader>
-          <FormArticulo
-            articulo={editingArticulo}
+          <FormCliente
+            cliente={editingCliente}
             onSuccess={() => setFormOpen(false)}
           />
         </DialogContent>

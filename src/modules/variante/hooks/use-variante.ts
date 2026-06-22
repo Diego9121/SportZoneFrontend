@@ -2,6 +2,8 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import {
   createVariante,
   deleteVariante,
+  getCatalogoVariantes,
+  getMovimientosStock,
   getVarianteByCodigoBarras,
   getVariantes,
   updateVariante,
@@ -71,5 +73,22 @@ export function useAllVariantes() {
 export function useVarianteByCodigoBarras() {
   return useMutation({
     mutationFn: getVarianteByCodigoBarras,
+  })
+}
+//**********************************************CATÁLOGO (POS)*/
+// Trae todo el catálogo con stock disponible de una vez; el filtro de texto
+// se aplica en el cliente (igual criterio que la página de Búsqueda de Artículos).
+export function useCatalogoVariantes() {
+  return useQuery({
+    queryKey: ['variantes', 'catalogo'],
+    queryFn: () => getCatalogoVariantes({ isPage: false, stock: 1 }),
+  })
+}
+//**********************************************MOVIMIENTOS DE STOCK*/
+export function useMovimientosStock(varianteId: number | undefined) {
+  return useQuery({
+    queryKey: ['movimientos-stock', varianteId],
+    queryFn: () => getMovimientosStock(varianteId as number),
+    enabled: varianteId !== undefined,
   })
 }

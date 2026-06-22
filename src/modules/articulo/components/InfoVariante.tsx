@@ -36,7 +36,7 @@ function InfoVariante({ variante, compact = false }: InfoVarianteProps) {
         <CardContent className="flex flex-col gap-1 text-sm text-muted-foreground">
           <span>{tallas.join(' · ') || 'Sin tallas registradas'}</span>
           <span>Stock: {variante.stock}</span>
-          <span className="font-medium text-foreground">$ {variante.precioVenta}</span>
+          <span className="font-medium text-foreground">Bs. {variante.precioVenta}</span>
         </CardContent>
       </Card>
     )
@@ -81,11 +81,11 @@ function InfoVariante({ variante, compact = false }: InfoVarianteProps) {
         </div>
         <div>
           <div className="text-muted-foreground">Precio venta</div>
-          <div>$ {variante.precioVenta}</div>
+          <div>Bs. {variante.precioVenta}</div>
         </div>
         <div>
           <div className="text-muted-foreground">Precio costo</div>
-          <div>$ {variante.precioCosto}</div>
+          <div>Bs. {variante.precioCosto}</div>
         </div>
       </CardContent>
     </Card>

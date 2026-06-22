@@ -32,8 +32,8 @@ export const sidebarMenu: NavGroup[] = [
         title: 'Almacenes',
         icon: Warehouse,
         items: [
-          { title: 'Lista de Artículos', url: '/articulos', icon: List },
-          { title: 'Lista de Variantes', url: '/articulos/variantes', icon: Layers },
+          { title: 'Lista de Modelos', url: '/articulos', icon: List },
+          { title: 'Lista de T/C', url: '/articulos/variantes', icon: Layers },
           { title: 'Búsqueda de Artículos', url: '/almacenes/consulta', icon: QrCode },
         ],
       },
@@ -50,8 +50,8 @@ export const sidebarMenu: NavGroup[] = [
   {
     label: 'Ventas',
     items: [
-      { title: 'Ventas', url: '/ventas', icon: ShoppingCart },
-      { title: 'Devoluciones', url: '/devoluciones', icon: Undo2 },
+      { title: 'Lista de Ventas', url: '/ventas', icon: List },
+      { title: 'Crear Ventas', url: '/ventas/crear', icon: ShoppingCart },
       { title: 'Clientes', url: '/clientes', icon: Users },
     ],
   },
