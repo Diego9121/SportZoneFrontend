@@ -6,7 +6,6 @@ import {
   ShoppingCart,
   Tags,
   Truck,
-  Undo2,
   Users,
   Warehouse,
   QrCode,
@@ -54,5 +53,9 @@ export const sidebarMenu: NavGroup[] = [
       { title: 'Crear Ventas', url: '/ventas/crear', icon: ShoppingCart },
       { title: 'Clientes', url: '/clientes', icon: Users },
     ],
+  },
+  {
+    label: 'Reportes',
+    items: [{ title: 'Generar Reportes', url: '/reportes', icon: List }],
   },
 ]

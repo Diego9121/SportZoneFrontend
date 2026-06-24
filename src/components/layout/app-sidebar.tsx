@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/sidebar'
 import { NavMain } from '@/components/layout/nav-main'
 import { NavUser } from '@/components/layout/nav-user'
-import { currentUser } from '@/components/layout/current-user'
 import { sidebarMenu } from '@/components/layout/sidebar-menu'
 import type { ComponentProps } from 'react'
 
@@ -42,7 +41,7 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
         <NavMain groups={sidebarMenu} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={currentUser} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

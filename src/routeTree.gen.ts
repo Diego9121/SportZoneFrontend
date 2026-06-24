@@ -10,11 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MarcasRouteImport } from './routes/marcas'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as DevolucionesRouteImport } from './routes/devoluciones'
 import { Route as ClientesRouteImport } from './routes/clientes'
 import { Route as CategoriasRouteImport } from './routes/categorias'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VentasIndexRouteImport } from './routes/ventas/index'
+import { Route as ReportesIndexRouteImport } from './routes/reportes/index'
 import { Route as ComprasIndexRouteImport } from './routes/compras/index'
 import { Route as ArticulosIndexRouteImport } from './routes/articulos/index'
 import { Route as AlmacenesIndexRouteImport } from './routes/almacenes/index'
@@ -28,6 +30,11 @@ import { Route as AlmacenesConsultaRouteImport } from './routes/almacenes/consul
 const MarcasRoute = MarcasRouteImport.update({
   id: '/marcas',
   path: '/marcas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevolucionesRoute = DevolucionesRouteImport.update({
@@ -53,6 +60,11 @@ const IndexRoute = IndexRouteImport.update({
 const VentasIndexRoute = VentasIndexRouteImport.update({
   id: '/ventas/',
   path: '/ventas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportesIndexRoute = ReportesIndexRouteImport.update({
+  id: '/reportes/',
+  path: '/reportes/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComprasIndexRoute = ComprasIndexRouteImport.update({
@@ -106,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/categorias': typeof CategoriasRoute
   '/clientes': typeof ClientesRoute
   '/devoluciones': typeof DevolucionesRoute
+  '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
   '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
@@ -116,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/almacenes/': typeof AlmacenesIndexRoute
   '/articulos/': typeof ArticulosIndexRoute
   '/compras/': typeof ComprasIndexRoute
+  '/reportes/': typeof ReportesIndexRoute
   '/ventas/': typeof VentasIndexRoute
 }
 export interface FileRoutesByTo {
@@ -123,6 +137,7 @@ export interface FileRoutesByTo {
   '/categorias': typeof CategoriasRoute
   '/clientes': typeof ClientesRoute
   '/devoluciones': typeof DevolucionesRoute
+  '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
   '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
@@ -133,6 +148,7 @@ export interface FileRoutesByTo {
   '/almacenes': typeof AlmacenesIndexRoute
   '/articulos': typeof ArticulosIndexRoute
   '/compras': typeof ComprasIndexRoute
+  '/reportes': typeof ReportesIndexRoute
   '/ventas': typeof VentasIndexRoute
 }
 export interface FileRoutesById {
@@ -141,6 +157,7 @@ export interface FileRoutesById {
   '/categorias': typeof CategoriasRoute
   '/clientes': typeof ClientesRoute
   '/devoluciones': typeof DevolucionesRoute
+  '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
   '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
@@ -151,6 +168,7 @@ export interface FileRoutesById {
   '/almacenes/': typeof AlmacenesIndexRoute
   '/articulos/': typeof ArticulosIndexRoute
   '/compras/': typeof ComprasIndexRoute
+  '/reportes/': typeof ReportesIndexRoute
   '/ventas/': typeof VentasIndexRoute
 }
 export interface FileRouteTypes {
@@ -160,6 +178,7 @@ export interface FileRouteTypes {
     | '/categorias'
     | '/clientes'
     | '/devoluciones'
+    | '/login'
     | '/marcas'
     | '/almacenes/consulta'
     | '/articulos/fabricantes'
@@ -170,6 +189,7 @@ export interface FileRouteTypes {
     | '/almacenes/'
     | '/articulos/'
     | '/compras/'
+    | '/reportes/'
     | '/ventas/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -177,6 +197,7 @@ export interface FileRouteTypes {
     | '/categorias'
     | '/clientes'
     | '/devoluciones'
+    | '/login'
     | '/marcas'
     | '/almacenes/consulta'
     | '/articulos/fabricantes'
@@ -187,6 +208,7 @@ export interface FileRouteTypes {
     | '/almacenes'
     | '/articulos'
     | '/compras'
+    | '/reportes'
     | '/ventas'
   id:
     | '__root__'
@@ -194,6 +216,7 @@ export interface FileRouteTypes {
     | '/categorias'
     | '/clientes'
     | '/devoluciones'
+    | '/login'
     | '/marcas'
     | '/almacenes/consulta'
     | '/articulos/fabricantes'
@@ -204,6 +227,7 @@ export interface FileRouteTypes {
     | '/almacenes/'
     | '/articulos/'
     | '/compras/'
+    | '/reportes/'
     | '/ventas/'
   fileRoutesById: FileRoutesById
 }
@@ -212,6 +236,7 @@ export interface RootRouteChildren {
   CategoriasRoute: typeof CategoriasRoute
   ClientesRoute: typeof ClientesRoute
   DevolucionesRoute: typeof DevolucionesRoute
+  LoginRoute: typeof LoginRoute
   MarcasRoute: typeof MarcasRoute
   AlmacenesConsultaRoute: typeof AlmacenesConsultaRoute
   ArticulosFabricantesRoute: typeof ArticulosFabricantesRoute
@@ -222,6 +247,7 @@ export interface RootRouteChildren {
   AlmacenesIndexRoute: typeof AlmacenesIndexRoute
   ArticulosIndexRoute: typeof ArticulosIndexRoute
   ComprasIndexRoute: typeof ComprasIndexRoute
+  ReportesIndexRoute: typeof ReportesIndexRoute
   VentasIndexRoute: typeof VentasIndexRoute
 }
 
@@ -232,6 +258,13 @@ declare module '@tanstack/react-router' {
       path: '/marcas'
       fullPath: '/marcas'
       preLoaderRoute: typeof MarcasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/devoluciones': {
@@ -267,6 +300,13 @@ declare module '@tanstack/react-router' {
       path: '/ventas'
       fullPath: '/ventas/'
       preLoaderRoute: typeof VentasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reportes/': {
+      id: '/reportes/'
+      path: '/reportes'
+      fullPath: '/reportes/'
+      preLoaderRoute: typeof ReportesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/compras/': {
@@ -340,6 +380,7 @@ const rootRouteChildren: RootRouteChildren = {
   CategoriasRoute: CategoriasRoute,
   ClientesRoute: ClientesRoute,
   DevolucionesRoute: DevolucionesRoute,
+  LoginRoute: LoginRoute,
   MarcasRoute: MarcasRoute,
   AlmacenesConsultaRoute: AlmacenesConsultaRoute,
   ArticulosFabricantesRoute: ArticulosFabricantesRoute,
@@ -350,6 +391,7 @@ const rootRouteChildren: RootRouteChildren = {
   AlmacenesIndexRoute: AlmacenesIndexRoute,
   ArticulosIndexRoute: ArticulosIndexRoute,
   ComprasIndexRoute: ComprasIndexRoute,
+  ReportesIndexRoute: ReportesIndexRoute,
   VentasIndexRoute: VentasIndexRoute,
 }
 export const routeTree = rootRouteImport

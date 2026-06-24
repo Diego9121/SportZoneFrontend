@@ -1,5 +1,7 @@
-import { ChevronsUpDown, LogOut, User as UserIcon } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Link, useNavigate } from '@tanstack/react-router'
+import { ChevronsUpDown, LogIn, LogOut, User as UserIcon } from 'lucide-react'
+import { toast } from 'sonner'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,12 +16,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import type { AppUser } from '@/types/user'
-
-const roleLabel: Record<AppUser['role'], string> = {
-  admin: 'Administrador',
-  vendedor: 'Vendedor',
-}
+import { useAuth } from '@/modules/auth/hooks/use-auth'
 
 function initials(name: string) {
   return name
@@ -30,8 +27,41 @@ function initials(name: string) {
     .toUpperCase()
 }
 
-export function NavUser({ user }: { user: AppUser }) {
+export function NavUser() {
   const { isMobile } = useSidebar()
+  const { session, isAuthenticated, logout } = useAuth()
+  const navigate = useNavigate()
+
+  function handleLogout() {
+    logout()
+    toast.success('Sesión cerrada correctamente.')
+    navigate({ to: '/login' })
+  }
+
+  if (!isAuthenticated || !session) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" asChild>
+            <Link to="/login">
+              <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarFallback className="rounded-lg">
+                  <UserIcon className="size-4" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">Invitado</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  Iniciar sesión
+                </span>
+              </div>
+              <LogIn className="ml-auto size-4" />
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
+  }
 
   return (
     <SidebarMenu>
@@ -43,15 +73,14 @@ export function NavUser({ user }: { user: AppUser }) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatarUrl} alt={user.name} />
                 <AvatarFallback className="rounded-lg">
-                  {initials(user.name)}
+                  {initials(session.nombre)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{session.nombre}</span>
                 <span className="truncate text-xs text-muted-foreground">
-                  {roleLabel[user.role]}
+                  {session.rolNombre}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -66,26 +95,20 @@ export function NavUser({ user }: { user: AppUser }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatarUrl} alt={user.name} />
                   <AvatarFallback className="rounded-lg">
-                    {initials(user.name)}
+                    {initials(session.nombre)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">{session.nombre}</span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {user.email}
+                    {session.email}
                   </span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <UserIcon />
-              Mi perfil
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Cerrar sesión
             </DropdownMenuItem>
