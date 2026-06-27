@@ -12,6 +12,8 @@ export const varianteSchema = z.object({
   tallaCm: z.string().nullable(),
   color: z.string().nullable(),
   codigoBarras: z.string().nullable(),
+  articuloImagen: z.string().nullable(),
+  imagenUrl: z.string().nullable(),
   stock: z.number(),
   stockMinimo: z.number(),
   stockBajo: z.boolean(),

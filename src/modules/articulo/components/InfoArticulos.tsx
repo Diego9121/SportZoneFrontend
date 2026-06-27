@@ -1,4 +1,4 @@
-import { ImageOff } from 'lucide-react'
+import ImagenFallbackIcon from '@/components/ImagenFallbackIcon'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { ArticuloDetalle } from '../schemas/articulo.schema'
 
@@ -18,7 +18,7 @@ function InfoArticulos({ articulo }: InfoArticulosProps) {
               className="h-full w-full object-contain"
             />
           ) : (
-            <ImageOff className="h-8 w-8 text-muted-foreground" />
+            <ImagenFallbackIcon className="h-8 w-8 text-muted-foreground" />
           )}
         </div>
         <div className="flex flex-1 flex-col gap-2">

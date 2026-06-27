@@ -1,4 +1,5 @@
-import { ImageOff, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
+import ImagenFallbackIcon from '@/components/ImagenFallbackIcon'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
@@ -24,7 +25,7 @@ function CatalogoCard({ variante, cantidadEnCarrito, onAdd }: CatalogoCardProps)
               className="h-full w-full object-contain"
             />
           ) : (
-            <ImageOff className="h-6 w-6 text-muted-foreground" />
+            <ImagenFallbackIcon className="h-6 w-6 text-muted-foreground" />
           )}
         </div>
         <div className="flex flex-col gap-0.5">

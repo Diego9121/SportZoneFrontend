@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { Pencil, Plus, QrCode, Search, Trash } from 'lucide-react'
+import { Pencil, Plus, Search, Trash } from 'lucide-react'
 import { toast } from 'sonner'
-import ImagenFallbackIcon from '@/components/ImagenFallbackIcon'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,77 +41,75 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from '@/components/ui/input-group'
-import { useArticulos } from '@/modules/articulo/hooks/use-articulo'
-import type { Articulo } from '../schemas/articulo.schema'
-import { useDeleteArticulo } from '../hooks/use-articulo'
-import FormArticulo from './FormArticulo'
+} from "@/components/ui/input-group"
 
-export function ListArticulos() {
+import { useDeleteUsuario, UseObtenerUsuarios } from '../hooks/use-usuario'
+import type { Usuarios } from '../schemas/usuarioSchema'
+import FormUsuario from './FormUsuario'
+
+
+function ListUsuarios() {
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(20)
+  const [pageSize, setPageSize] = useState(10)
   const [filter, setFilter] = useState<string | undefined>(undefined)
-  const { data, isLoading, isError, error } = useArticulos(page, pageSize, filter)
+  const { data, isLoading, isError, error } = UseObtenerUsuarios(page, pageSize, filter)
   const [formOpen, setFormOpen] = useState(false)
-  const [deletingArticulo, setDeletingArticulo] = useState<Articulo | null>(null)
-  const deleteArticuloId = useDeleteArticulo()
-  const [editingArticulo, setEditingArticulo] = useState<Articulo | undefined>(
-    undefined,
-  )
+  const [deletingUsuarios, setDeletingUsuarios] = useState<Usuarios | null>(null,)
+  const deleteUsuariosId = useDeleteUsuario()
+  const [editingUsuario, setEditingUsuario] = useState<Usuarios | undefined>(undefined)
+
+  const usuarios = data?.data.items ?? []
+  const totalPages = data?.data.totalPages ?? 1
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Cargando artículos...</p>
+    return <p className="text-sm text-muted-foreground">Cargando usuarios...</p>
   }
 
   if (isError) {
     return <p className="text-sm text-destructive">{error.message}</p>
   }
-
-  const articulos = data?.data.items ?? []
-  const totalPages = data?.data.totalPages ?? 1
-
-  function openDelete(articulo: Articulo) {
-    setDeletingArticulo(articulo)
+  // AQUI INICIA LA LOGICA PARA ELIMINAR UN USUARIO
+  function openDelete(usuario: Usuarios) {
+    setDeletingUsuarios(usuario)
   }
+
   function confirmDelete() {
-    if (!deletingArticulo) return
-    deleteArticuloId.mutate(deletingArticulo.id, {
+    if (!deletingUsuarios) return
+    deleteUsuariosId.mutate(deletingUsuarios.id, {
       onSuccess: () => {
-        toast.success('Artículo eliminado correctamente.')
-        setDeletingArticulo(null)
+        toast.success('Usuario eliminado correctamente.')
+        setDeletingUsuarios(null)
       },
       onError: () => {
-        toast.error('No se pudo eliminar el artículo.')
+        toast.error('No se pudo eliminar el usuario.')
       },
     })
   }
+  //AQUI TERMINA LA LOGICA PARA ELIMINAR UN USUARIO
+
   function openCreate() {
-    setEditingArticulo(undefined)
+    setEditingUsuario(undefined)
     setFormOpen(true)
   }
 
-  function openEdit(articulo: Articulo) {
-    setEditingArticulo(articulo)
+  function openEdit(usuario: Usuarios) {
+    setEditingUsuario(usuario)
     setFormOpen(true)
   }
-  function openQr(id: number) {
-    console.log('Generar QR para artículo ID:', id)
-    const url = `http://localhost:5176/api/Articulos/${id}`
-    window.open(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`, '_blank')
 
-  }
   return (
     <div>
+      {/*ESTA ES LA SECCION DE BUSCAR USUARIOS Y EL BOTON DE REAR*/}
       <div className="flex items-center justify-between">
         <InputGroup className="w-[300px]">
           <InputGroupInput
             id="input-group-url"
-            placeholder="Buscar artículos..."
+            placeholder="Buscar usuarios..."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           />
@@ -122,78 +119,56 @@ export function ListArticulos() {
         </InputGroup>
         <Button onClick={openCreate}>
           <Plus />
-          Agregar Modelo
+          Nuevo usuario
         </Button>
       </div>
+      {/*AQUI TERMINA LA SECCION DE BUSCAR Y CREAR*/}
+
+      {/*AQUI EMPIEZA LA SECCION DE LA LISTA DE USUARIOS*/}
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Imagen</TableHead>
-            <TableHead>Código</TableHead>
             <TableHead>Nombre</TableHead>
-            <TableHead>Categoría</TableHead>
-            <TableHead>Marca</TableHead>
-            <TableHead>Variantes</TableHead>
-            <TableHead>Stock</TableHead>
+            <TableHead>Correo</TableHead>
+            <TableHead>Nombre del Rol</TableHead>
+            <TableHead>Fecha de Creación</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {articulos.map((articulo) => (
-            <TableRow key={articulo.id}>
+          {usuarios.map((usuario) => (
+            <TableRow key={usuario.id}>
+
+              <TableCell>{usuario.nombre ?? '-'}</TableCell>
+              <TableCell>{usuario.email ?? '-'}</TableCell>
+              <TableCell>{usuario.rolNombre ?? '-'}</TableCell>
               <TableCell>
-                {articulo.imagen ? (
-                  <img
-                    src={articulo.imagen}
-                    alt={articulo.nombre}
-                    className="w-10 h-10 object-contain"
-                  />
-                ) : (
-                  <div className="w-10 h-10 bg-muted flex items-center justify-center">
-                    <ImagenFallbackIcon className="w-5 h-5 text-muted-foreground" />
-                  </div>
-                )}
+                {new Date(usuario.createdAt).toLocaleDateString()}
               </TableCell>
-              <TableCell>{articulo.codigo}</TableCell>
-              <TableCell>{articulo.nombre}</TableCell>
-              <TableCell>
-                <span className="inline-flex items-center rounded-md bg-blue-400/10 px-2 py-1 text-xs font-medium text-blue-400 inset-ring inset-ring-blue-400/30">
-                  {articulo.categoriaNombre}
-                </span>
-              </TableCell>
-              <TableCell>{articulo.marcaNombre}</TableCell>
-              <TableCell>{articulo.totalVariantes}</TableCell>
-              <TableCell>{articulo.stockTotal}</TableCell>
               <TableCell className="text-right">
                 <Button
                   size="icon"
                   variant="ghost"
-                  aria-label="Eliminar artículo"
-                  onClick={() => openDelete(articulo)}
-                >
-                  <Trash />
+                  aria-label="Eliminar usuario"
+                  onClick={() => openDelete(usuario)}
+                > <Trash />
                 </Button>
                 <Button
                   size="icon"
                   variant="ghost"
-                  aria-label="Editar artículo"
-                  onClick={() => openEdit(articulo)}
+                  aria-label="Editar usuario"
+                  onClick={() => openEdit(usuario)}
                 >
                   <Pencil />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  aria-label="Generar QR"
-                  onClick={() => openQr(articulo.id)}
-                >
-                  <QrCode />
                 </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      {/*AQUI TERMINA LA SECCION DE LA LISTA DE USUARIOS*/}
+
+      {/*AQUI EMPIEZA LA SECCION DE PAGINADO*/}
       <Pagination className="mt-4">
         <PaginationContent className="flex justify-between w-[500px]">
           <Select
@@ -241,17 +216,21 @@ export function ListArticulos() {
           </PaginationItem>
         </PaginationContent>
       </Pagination>
+      {/*AQUI TERMINA LA SECCION DE PAGINADO*/}
+
+
+      {/*ESTE ES EL COMPONENTE PARA ABRIR LA ALERA DE ELIMINAR USUARIOS*/}
       <AlertDialog
-        open={deletingArticulo !== null}
+        open={deletingUsuarios !== null}
         onOpenChange={(open) => {
-          if (!open) setDeletingArticulo(null)
+          if (!open) setDeletingUsuarios(null)
         }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar artículo?</AlertDialogTitle>
+            <AlertDialogTitle>¿Eliminar usuario?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción eliminará el artículo "{deletingArticulo?.nombre}" y
+              Esta acción eliminará al usuario "{deletingUsuarios?.nombre}" y
               no se puede deshacer.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -259,26 +238,33 @@ export function ListArticulos() {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
-              disabled={deleteArticuloId.isPending}
+              disabled={deleteUsuariosId.isPending}
             >
               Eliminar
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      {/*AQUI TERMINA EL COMPONENTE PARA ELIMINAR USUARIOS*/}
+
+      {/*ESTE ES EL DIALOG PARA CREAR/EDITAR USUARIOS*/}
       <Dialog open={formOpen} onOpenChange={setFormOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editingArticulo ? 'Editar Modelo' : 'Agregar Modelo'}
+              {editingUsuario ? 'Editar usuario' : 'Nuevo usuario'}
             </DialogTitle>
           </DialogHeader>
-          <FormArticulo
-            articulo={editingArticulo}
+          <FormUsuario
+            usuario={editingUsuario}
             onSuccess={() => setFormOpen(false)}
           />
         </DialogContent>
       </Dialog>
+      {/*AQUI TERMINA EL DIALOG PARA CREAR/EDITAR USUARIOS*/}
+
     </div>
   )
 }
+
+export default ListUsuarios

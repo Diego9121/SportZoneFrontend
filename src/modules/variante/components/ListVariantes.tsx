@@ -61,6 +61,7 @@ import { useDeleteVariante, useVariantes } from '@/modules/variante/hooks/use-va
 import type { Variante } from '../schemas/variante.schema'
 import FormVariante from './FormVariante'
 import MovimientoStockDrawer from './MovimientoStockDrawer'
+import VarianteImagen from './VarianteImagen'
 
 export function ListVariantes() {
   const [page, setPage] = useState(1)
@@ -168,6 +169,7 @@ export function ListVariantes() {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Imagen</TableHead>
             <TableHead>Artículo</TableHead>
             <TableHead>Talla</TableHead>
             <TableHead>Color</TableHead>
@@ -181,6 +183,16 @@ export function ListVariantes() {
         <TableBody>
           {variantes.map((variante) => (
             <TableRow key={variante.id}>
+              <TableCell>
+                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md border bg-muted">
+                  <VarianteImagen
+                    imagenUrl={variante.imagenUrl}
+                    articuloImagen={variante.articuloImagen}
+                    alt={variante.articuloNombre}
+                    iconClassName="h-5 w-5 text-muted-foreground"
+                  />
+                </div>
+              </TableCell>
               <TableCell>
                 <div className="font-medium">{variante.articuloNombre}</div>
                 <div className="text-xs text-muted-foreground">{variante.articuloCodigo}</div>

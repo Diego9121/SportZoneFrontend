@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsuariosRouteImport } from './routes/usuarios'
 import { Route as MarcasRouteImport } from './routes/marcas'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DevolucionesRouteImport } from './routes/devoluciones'
@@ -27,6 +28,11 @@ import { Route as ArticulosVariantesRouteImport } from './routes/articulos/varia
 import { Route as ArticulosFabricantesRouteImport } from './routes/articulos/fabricantes'
 import { Route as AlmacenesConsultaRouteImport } from './routes/almacenes/consulta'
 
+const UsuariosRoute = UsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarcasRoute = MarcasRouteImport.update({
   id: '/marcas',
   path: '/marcas',
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/devoluciones': typeof DevolucionesRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
+  '/usuarios': typeof UsuariosRoute
   '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
   '/articulos/variantes': typeof ArticulosVariantesRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByTo {
   '/devoluciones': typeof DevolucionesRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
+  '/usuarios': typeof UsuariosRoute
   '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
   '/articulos/variantes': typeof ArticulosVariantesRoute
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/devoluciones': typeof DevolucionesRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
+  '/usuarios': typeof UsuariosRoute
   '/almacenes/consulta': typeof AlmacenesConsultaRoute
   '/articulos/fabricantes': typeof ArticulosFabricantesRoute
   '/articulos/variantes': typeof ArticulosVariantesRoute
@@ -180,6 +189,7 @@ export interface FileRouteTypes {
     | '/devoluciones'
     | '/login'
     | '/marcas'
+    | '/usuarios'
     | '/almacenes/consulta'
     | '/articulos/fabricantes'
     | '/articulos/variantes'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/devoluciones'
     | '/login'
     | '/marcas'
+    | '/usuarios'
     | '/almacenes/consulta'
     | '/articulos/fabricantes'
     | '/articulos/variantes'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/devoluciones'
     | '/login'
     | '/marcas'
+    | '/usuarios'
     | '/almacenes/consulta'
     | '/articulos/fabricantes'
     | '/articulos/variantes'
@@ -238,6 +250,7 @@ export interface RootRouteChildren {
   DevolucionesRoute: typeof DevolucionesRoute
   LoginRoute: typeof LoginRoute
   MarcasRoute: typeof MarcasRoute
+  UsuariosRoute: typeof UsuariosRoute
   AlmacenesConsultaRoute: typeof AlmacenesConsultaRoute
   ArticulosFabricantesRoute: typeof ArticulosFabricantesRoute
   ArticulosVariantesRoute: typeof ArticulosVariantesRoute
@@ -253,6 +266,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/usuarios': {
+      id: '/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof UsuariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/marcas': {
       id: '/marcas'
       path: '/marcas'
@@ -382,6 +402,7 @@ const rootRouteChildren: RootRouteChildren = {
   DevolucionesRoute: DevolucionesRoute,
   LoginRoute: LoginRoute,
   MarcasRoute: MarcasRoute,
+  UsuariosRoute: UsuariosRoute,
   AlmacenesConsultaRoute: AlmacenesConsultaRoute,
   ArticulosFabricantesRoute: ArticulosFabricantesRoute,
   ArticulosVariantesRoute: ArticulosVariantesRoute,

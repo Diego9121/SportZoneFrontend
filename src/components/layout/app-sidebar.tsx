@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Dumbbell } from 'lucide-react'
 import {
@@ -13,9 +14,17 @@ import {
 import { NavMain } from '@/components/layout/nav-main'
 import { NavUser } from '@/components/layout/nav-user'
 import { sidebarMenu } from '@/components/layout/sidebar-menu'
+import { filterNavGroupsByRole } from '@/lib/nav'
+import { useAuth } from '@/modules/auth/hooks/use-auth'
 import type { ComponentProps } from 'react'
 
 export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
+  const { session } = useAuth()
+  const visibleMenu = useMemo(
+    () => filterNavGroupsByRole(sidebarMenu, session?.rolNombre ?? ''),
+    [session],
+  )
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -38,7 +47,7 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain groups={sidebarMenu} />
+        <NavMain groups={visibleMenu} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

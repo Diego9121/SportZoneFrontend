@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Icon } from '@iconify/react'
+import ImagenFallbackIcon from '@/components/ImagenFallbackIcon'
 
 interface VarianteImagenProps {
   imagenUrl?: string | null
@@ -19,12 +19,7 @@ function VarianteImagen({ imagenUrl, articuloImagen, alt, iconClassName }: Varia
   }
 
   if (!src || srcConError) {
-    return (
-      <Icon
-        icon="emojione-monotone:running-shoe"
-        className={iconClassName ?? 'h-6 w-6 text-muted-foreground'}
-      />
-    )
+    return <ImagenFallbackIcon className={iconClassName} />
   }
 
   return (

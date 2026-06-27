@@ -15,7 +15,11 @@ import type { NavGroup } from '@/types/nav'
 export const sidebarMenu: NavGroup[] = [
   {
     label: 'Principal',
-    items: [{ title: 'Dashboard', url: '/', icon: LayoutDashboard }],
+    items: [
+      { title: 'Dashboard', url: '/', icon: LayoutDashboard },
+      { title: 'Usuarios', url: '/usuarios', icon: Users },
+    ],
+    
   },
   {
     label: 'Catálogo',

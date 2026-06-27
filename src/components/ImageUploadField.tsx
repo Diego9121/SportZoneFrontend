@@ -1,8 +1,9 @@
 import { useRef } from 'react'
 import type { ChangeEvent } from 'react'
-import { Camera, ImageOff, ImagePlus, Loader2, Trash } from 'lucide-react'
+import { Camera, ImagePlus, Loader2, Trash } from 'lucide-react'
 import { toast } from 'sonner'
 
+import ImagenFallbackIcon from '@/components/ImagenFallbackIcon'
 import { Button } from '@/components/ui/button'
 import { useUploadImagen } from '@/hooks/use-upload-imagen'
 import { validateImagenFile } from '@/lib/validate-imagen-file'
@@ -47,7 +48,7 @@ function ImageUploadField({ value, onChange, carpeta = 'general', disabled }: Im
         {value ? (
           <img src={value} alt="Vista previa" className="h-full w-full object-contain" />
         ) : (
-          <ImageOff className="h-6 w-6 text-muted-foreground" />
+          <ImagenFallbackIcon className="h-6 w-6 text-muted-foreground" />
         )}
       </div>
 

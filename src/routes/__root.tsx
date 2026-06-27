@@ -2,12 +2,16 @@ import { createRootRoute, Outlet, redirect, useLocation } from '@tanstack/react-
 import { AppLayout } from '@/components/layout/app-layout'
 import { Toaster } from '@/components/ui/sonner'
 import { getStoredSession } from '@/lib/auth-storage'
+import { puedeAccederA } from '@/lib/permissions'
 
 export const Route = createRootRoute({
   beforeLoad: ({ location }) => {
-    const isAuthenticated = getStoredSession() !== null
-    if (!isAuthenticated && location.pathname !== '/login') {
+    const session = getStoredSession()
+    if (!session && location.pathname !== '/login') {
       throw redirect({ to: '/login' })
+    }
+    if (session && location.pathname !== '/login' && !puedeAccederA(session.rolNombre, location.pathname)) {
+      throw redirect({ to: '/' })
     }
   },
   component: RootComponent,
