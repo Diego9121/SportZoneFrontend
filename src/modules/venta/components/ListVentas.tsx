@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import { Download, Eye, Plus, Search } from 'lucide-react'
+import { formatMoneda } from '@/lib/currency'
 import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
@@ -111,7 +112,7 @@ export function ListVentas() {
               </TableCell>
               <TableCell>{venta.numeroDoc ?? '-'}</TableCell>
               <TableCell className="capitalize">{venta.tipoComprobante}</TableCell>
-              <TableCell>Bs. {venta.total.toFixed(2)}</TableCell>
+              <TableCell>{formatMoneda(venta.total)}</TableCell>
               <TableCell>
                 <Badge variant={badgeVariantPorEstado(venta.estado)}>{venta.estado}</Badge>
               </TableCell>
@@ -229,14 +230,14 @@ export function ListVentas() {
                     <TableRow key={detalle.id}>
                       <TableCell>{detalle.varianteDescripcion}</TableCell>
                       <TableCell>{detalle.cantidad}</TableCell>
-                      <TableCell>Bs. {detalle.precioUnitario.toFixed(2)}</TableCell>
-                      <TableCell>Bs. {detalle.subtotal.toFixed(2)}</TableCell>
+                      <TableCell>{formatMoneda(detalle.precioUnitario)}</TableCell>
+                      <TableCell>{formatMoneda(detalle.subtotal)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
               <div className="flex justify-end text-base font-medium">
-                Total: Bs. {viewingVenta.total.toFixed(2)}
+                Total: {formatMoneda(viewingVenta.total)}
               </div>
               <PDFDownloadLink
                 document={<VentaTicketPdf venta={viewingVenta} />}

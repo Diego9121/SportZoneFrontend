@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import { ChevronDown, ChevronRight, Download } from 'lucide-react'
+import { formatMoneda } from '@/lib/currency'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -97,31 +98,31 @@ function ReporteVentasTab() {
             <CardHeader>
               <CardTitle className="text-muted-foreground">Total vendido</CardTitle>
             </CardHeader>
-            <CardContent className="text-xl font-semibold">Bs. {resumen.totalVendido.toFixed(2)}</CardContent>
+            <CardContent className="text-xl font-semibold">{formatMoneda(resumen.totalVendido)}</CardContent>
           </Card>
           <Card size="sm">
             <CardHeader>
               <CardTitle className="text-muted-foreground">Descuentos</CardTitle>
             </CardHeader>
-            <CardContent className="text-xl font-semibold">Bs. {resumen.totalDescuentos.toFixed(2)}</CardContent>
+            <CardContent className="text-xl font-semibold">{formatMoneda(resumen.totalDescuentos)}</CardContent>
           </Card>
           <Card size="sm">
             <CardHeader>
               <CardTitle className="text-muted-foreground">Ticket promedio</CardTitle>
             </CardHeader>
-            <CardContent className="text-xl font-semibold">Bs. {resumen.ticketPromedio.toFixed(2)}</CardContent>
+            <CardContent className="text-xl font-semibold">{formatMoneda(resumen.ticketPromedio)}</CardContent>
           </Card>
           <Card size="sm">
             <CardHeader>
               <CardTitle className="text-muted-foreground">Costo total</CardTitle>
             </CardHeader>
-            <CardContent className="text-xl font-semibold">Bs. {resumen.totalCosto.toFixed(2)}</CardContent>
+            <CardContent className="text-xl font-semibold">{formatMoneda(resumen.totalCosto)}</CardContent>
           </Card>
           <Card size="sm">
             <CardHeader>
               <CardTitle className="text-muted-foreground">Ganancia bruta</CardTitle>
             </CardHeader>
-            <CardContent className="text-xl font-semibold">Bs. {resumen.gananciaBruta.toFixed(2)}</CardContent>
+            <CardContent className="text-xl font-semibold">{formatMoneda(resumen.gananciaBruta)}</CardContent>
           </Card>
         </div>
       )}
@@ -164,10 +165,10 @@ function ReporteVentasTab() {
                   <TableCell>
                     <Badge variant={badgeVariantPorEstado(venta.estado)}>{venta.estado}</Badge>
                   </TableCell>
-                  <TableCell>Bs. {venta.total.toFixed(2)}</TableCell>
-                  <TableCell>Bs. {venta.descuento.toFixed(2)}</TableCell>
-                  <TableCell>Bs. {venta.costo.toFixed(2)}</TableCell>
-                  <TableCell>Bs. {venta.ganancia.toFixed(2)}</TableCell>
+                  <TableCell>{formatMoneda(venta.total)}</TableCell>
+                  <TableCell>{formatMoneda(venta.descuento)}</TableCell>
+                  <TableCell>{formatMoneda(venta.costo)}</TableCell>
+                  <TableCell>{formatMoneda(venta.ganancia)}</TableCell>
                   <TableCell>{new Date(venta.createdAt).toLocaleDateString()}</TableCell>
                 </TableRow>
                 {expanded && (
@@ -187,8 +188,8 @@ function ReporteVentasTab() {
                             <TableRow key={index}>
                               <TableCell>{detalle.nombre}</TableCell>
                               <TableCell>{detalle.cantidad}</TableCell>
-                              <TableCell>Bs. {detalle.precioUnitario.toFixed(2)}</TableCell>
-                              <TableCell>Bs. {detalle.total.toFixed(2)}</TableCell>
+                              <TableCell>{formatMoneda(detalle.precioUnitario)}</TableCell>
+                              <TableCell>{formatMoneda(detalle.total)}</TableCell>
                             </TableRow>
                           ))}
                         </TableBody>

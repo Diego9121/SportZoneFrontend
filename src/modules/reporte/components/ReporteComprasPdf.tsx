@@ -1,5 +1,6 @@
 import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
 import { EMPRESA } from '@/lib/empresa'
+import { formatMoneda } from '@/lib/currency'
 import type { ReporteCompraItem, ReporteComprasResumen } from '../schemas/reporte.schema'
 
 const styles = StyleSheet.create({
@@ -137,11 +138,11 @@ function ReporteComprasPdf({ resumen, compras, desde, hasta }: ReporteComprasPdf
           </View>
           <View style={styles.resumenBox}>
             <Text style={styles.resumenLabel}>Total comprado</Text>
-            <Text style={styles.resumenValue}>Bs. {resumen.totalComprado.toFixed(2)}</Text>
+            <Text style={styles.resumenValue}>{formatMoneda(resumen.totalComprado)}</Text>
           </View>
           <View style={styles.resumenBox}>
             <Text style={styles.resumenLabel}>Compra promedio</Text>
-            <Text style={styles.resumenValue}>Bs. {resumen.compraPromedio.toFixed(2)}</Text>
+            <Text style={styles.resumenValue}>{formatMoneda(resumen.compraPromedio)}</Text>
           </View>
         </View>
 
@@ -157,14 +158,14 @@ function ReporteComprasPdf({ resumen, compras, desde, hasta }: ReporteComprasPdf
               <View style={styles.tableRow}>
                 <Text style={[styles.cell, styles.colDoc]}>{compra.numeroDoc ?? `#${compra.id}`}</Text>
                 <Text style={[styles.cell, styles.colProveedor]}>{compra.proveedorNombre ?? '-'}</Text>
-                <Text style={[styles.cell, styles.colTotal]}>{compra.total.toFixed(2)}</Text>
+                <Text style={[styles.cell, styles.colTotal]}>{formatMoneda(compra.total)}</Text>
                 <Text style={[styles.cell, styles.colFecha]}>{new Date(compra.createdAt).toLocaleDateString()}</Text>
               </View>
               {compra.detalles.length > 0 && (
                 <View style={styles.detalleWrapper}>
                   {compra.detalles.map((detalle, index) => (
                     <Text key={index} style={styles.detalleText}>
-                      • {detalle.nombre} — {detalle.cantidad} x Bs. {detalle.precioUnitario.toFixed(2)} = Bs. {detalle.total.toFixed(2)}
+                      • {detalle.nombre} — {detalle.cantidad} x {formatMoneda(detalle.precioUnitario)} = {formatMoneda(detalle.total)}
                     </Text>
                   ))}
                 </View>

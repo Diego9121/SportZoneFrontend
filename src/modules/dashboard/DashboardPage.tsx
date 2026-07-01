@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { DollarSign, Footprints, Percent, ShoppingCart } from 'lucide-react'
+import { formatMoneda } from '@/lib/currency'
 import { PageHeader } from '@/components/layout/page-header'
 import {
   Select,
@@ -105,19 +106,19 @@ function DashboardPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <DashboardKpiCard
           title="Ventas del mes"
-          value={`Bs. ${(ventasMes.data?.data.totalMesActual ?? 0).toFixed(2)}`}
+          value={formatMoneda(ventasMes.data?.data.totalMesActual ?? 0)}
           trend={ventasMes.data?.data.porcentajeCambio}
           icon={DollarSign}
         />
         <DashboardKpiCard
           title="Compras del mes"
-          value={`Bs. ${(comprasMes.data?.data.totalMesActual ?? 0).toFixed(2)}`}
+          value={formatMoneda(comprasMes.data?.data.totalMesActual ?? 0)}
           trend={comprasMes.data?.data.porcentajeCambio}
           icon={ShoppingCart}
         />
         <DashboardKpiCard
           title="Margen de ganancia"
-          value={`Bs. ${(margenMes.data?.data.gananciaBruta ?? 0).toFixed(2)}`}
+          value={formatMoneda(margenMes.data?.data.gananciaBruta ?? 0)}
           description={`Margen: ${(margenMes.data?.data.margenPorcentaje ?? 0).toFixed(1)}%`}
           icon={Percent}
         />

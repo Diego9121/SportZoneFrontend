@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { formatMoneda } from '@/lib/currency'
 import type { ArticuloDetalle } from '../schemas/articulo.schema'
 import type { Variante } from '@/modules/variante/schemas/variante.schema'
 import VarianteImagen from '@/modules/variante/components/VarianteImagen'
@@ -45,7 +46,7 @@ function InfoVariante({ variante, compact = false }: InfoVarianteProps) {
           </div>
           <span>{tallas.join(' · ') || 'Sin tallas registradas'}</span>
           <span>Stock: {variante.stock}</span>
-          <span className="font-medium text-foreground">Bs. {variante.precioVenta}</span>
+          <span className="font-medium text-foreground">{formatMoneda(variante.precioVenta)}</span>
         </CardContent>
       </Card>
     )
@@ -99,11 +100,11 @@ function InfoVariante({ variante, compact = false }: InfoVarianteProps) {
           </div>
           <div>
             <div className="text-muted-foreground">Precio venta</div>
-            <div>Bs. {variante.precioVenta}</div>
+            <div>{formatMoneda(variante.precioVenta)}</div>
           </div>
           <div>
             <div className="text-muted-foreground">Precio costo</div>
-            <div>Bs. {variante.precioCosto}</div>
+            <div>{formatMoneda(variante.precioCosto)}</div>
           </div>
         </div>
       </CardContent>

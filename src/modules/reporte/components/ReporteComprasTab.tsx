@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import { ChevronDown, ChevronRight, Download } from 'lucide-react'
+import { formatMoneda } from '@/lib/currency'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -90,13 +91,13 @@ function ReporteComprasTab() {
             <CardHeader>
               <CardTitle className="text-muted-foreground">Total comprado</CardTitle>
             </CardHeader>
-            <CardContent className="text-xl font-semibold">Bs. {resumen.totalComprado.toFixed(2)}</CardContent>
+            <CardContent className="text-xl font-semibold">{formatMoneda(resumen.totalComprado)}</CardContent>
           </Card>
           <Card size="sm">
             <CardHeader>
               <CardTitle className="text-muted-foreground">Compra promedio</CardTitle>
             </CardHeader>
-            <CardContent className="text-xl font-semibold">Bs. {resumen.compraPromedio.toFixed(2)}</CardContent>
+            <CardContent className="text-xl font-semibold">{formatMoneda(resumen.compraPromedio)}</CardContent>
           </Card>
         </div>
       )}
@@ -130,7 +131,7 @@ function ReporteComprasTab() {
                   </TableCell>
                   <TableCell>{compra.numeroDoc ?? `#${compra.id}`}</TableCell>
                   <TableCell>{compra.proveedorNombre ?? '-'}</TableCell>
-                  <TableCell>Bs. {compra.total.toFixed(2)}</TableCell>
+                  <TableCell>{formatMoneda(compra.total)}</TableCell>
                   <TableCell>{new Date(compra.createdAt).toLocaleDateString()}</TableCell>
                 </TableRow>
                 {expanded && (
@@ -150,8 +151,8 @@ function ReporteComprasTab() {
                             <TableRow key={index}>
                               <TableCell>{detalle.nombre}</TableCell>
                               <TableCell>{detalle.cantidad}</TableCell>
-                              <TableCell>Bs. {detalle.precioUnitario.toFixed(2)}</TableCell>
-                              <TableCell>Bs. {detalle.total.toFixed(2)}</TableCell>
+                              <TableCell>{formatMoneda(detalle.precioUnitario)}</TableCell>
+                              <TableCell>{formatMoneda(detalle.total)}</TableCell>
                             </TableRow>
                           ))}
                         </TableBody>

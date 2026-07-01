@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Minus, Plus, Trash } from 'lucide-react'
+import { formatMoneda } from '@/lib/currency'
 import { Button } from '@/components/ui/button'
 import {
   Combobox,
@@ -206,7 +207,7 @@ function CarritoPanel({
                 onChange={(e) => onUpdateDescuento(line.variante.id, Number(e.target.value) || 0)}
               />
               <span className="w-16 text-right text-sm font-medium">
-                Bs. {(line.cantidad * line.variante.precioVenta - line.descuento).toFixed(2)}
+                {formatMoneda(line.cantidad * line.variante.precioVenta - line.descuento)}
               </span>
             </div>
           </div>
@@ -216,15 +217,15 @@ function CarritoPanel({
       <div className="flex flex-col gap-1 text-sm">
         <div className="flex justify-between">
           <span className="text-muted-foreground">Subtotal</span>
-          <span>Bs. {subtotal.toFixed(2)}</span>
+          <span>{formatMoneda(subtotal)}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">Descuento</span>
-          <span>Bs. {descuentoTotal.toFixed(2)}</span>
+          <span>{formatMoneda(descuentoTotal)}</span>
         </div>
         <div className="flex justify-between text-base font-semibold">
           <span>Total</span>
-          <span>Bs. {total.toFixed(2)}</span>
+          <span>{formatMoneda(total)}</span>
         </div>
       </div>
 

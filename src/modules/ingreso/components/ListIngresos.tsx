@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Eye, Plus, Search } from 'lucide-react'
+import { formatMoneda } from '@/lib/currency'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -100,7 +101,7 @@ export function ListIngresos() {
               </TableCell>
               <TableCell>{ingreso.numeroDoc ?? '-'}</TableCell>
               <TableCell>{ingreso.detalles.length}</TableCell>
-              <TableCell>Bs. {ingreso.total.toFixed(2)}</TableCell>
+              <TableCell>{formatMoneda(ingreso.total)}</TableCell>
               <TableCell>
                 {new Date(ingreso.createdAt).toLocaleDateString()}
               </TableCell>
@@ -207,14 +208,14 @@ export function ListIngresos() {
                     <TableRow key={detalle.id}>
                       <TableCell>{detalle.varianteDescripcion}</TableCell>
                       <TableCell>{detalle.cantidad}</TableCell>
-                      <TableCell>Bs. {detalle.precioCosto.toFixed(2)}</TableCell>
-                      <TableCell>Bs. {detalle.subtotal.toFixed(2)}</TableCell>
+                      <TableCell>{formatMoneda(detalle.precioCosto)}</TableCell>
+                      <TableCell>{formatMoneda(detalle.subtotal)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
               <div className="flex justify-end text-base font-medium">
-                Total: Bs. {viewingIngreso.total.toFixed(2)}
+                Total: {formatMoneda(viewingIngreso.total)}
               </div>
             </div>
           )}

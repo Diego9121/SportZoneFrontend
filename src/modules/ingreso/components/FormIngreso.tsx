@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { formatMoneda } from '@/lib/currency'
 import {
   Form,
   Field as FormischField,
@@ -194,7 +195,7 @@ function DetalleRow({
       </div>
 
       <div className="flex h-9 items-center justify-end gap-2 text-sm font-medium sm:w-28">
-        Bs. {subtotal.toFixed(2)}
+        {formatMoneda(subtotal)}
       </div>
 
       <Button

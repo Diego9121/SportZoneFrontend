@@ -1,5 +1,6 @@
 import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
 import { EMPRESA } from '@/lib/empresa'
+import { formatMoneda } from '@/lib/currency'
 import type { ReporteVentaItem, ReporteVentasResumen } from '../schemas/reporte.schema'
 
 const styles = StyleSheet.create({
@@ -141,23 +142,23 @@ function ReporteVentasPdf({ resumen, ventas, desde, hasta }: ReporteVentasPdfPro
           </View>
           <View style={styles.resumenBox}>
             <Text style={styles.resumenLabel}>Total vendido</Text>
-            <Text style={styles.resumenValue}>Bs. {resumen.totalVendido.toFixed(2)}</Text>
+            <Text style={styles.resumenValue}>{formatMoneda(resumen.totalVendido)}</Text>
           </View>
           <View style={styles.resumenBox}>
             <Text style={styles.resumenLabel}>Descuentos</Text>
-            <Text style={styles.resumenValue}>Bs. {resumen.totalDescuentos.toFixed(2)}</Text>
+            <Text style={styles.resumenValue}>{formatMoneda(resumen.totalDescuentos)}</Text>
           </View>
           <View style={styles.resumenBox}>
             <Text style={styles.resumenLabel}>Ticket promedio</Text>
-            <Text style={styles.resumenValue}>Bs. {resumen.ticketPromedio.toFixed(2)}</Text>
+            <Text style={styles.resumenValue}>{formatMoneda(resumen.ticketPromedio)}</Text>
           </View>
           <View style={styles.resumenBox}>
             <Text style={styles.resumenLabel}>Costo total</Text>
-            <Text style={styles.resumenValue}>Bs. {resumen.totalCosto.toFixed(2)}</Text>
+            <Text style={styles.resumenValue}>{formatMoneda(resumen.totalCosto)}</Text>
           </View>
           <View style={styles.resumenBox}>
             <Text style={styles.resumenLabel}>Ganancia bruta</Text>
-            <Text style={styles.resumenValue}>Bs. {resumen.gananciaBruta.toFixed(2)}</Text>
+            <Text style={styles.resumenValue}>{formatMoneda(resumen.gananciaBruta)}</Text>
           </View>
         </View>
 
@@ -179,16 +180,16 @@ function ReporteVentasPdf({ resumen, ventas, desde, hasta }: ReporteVentasPdfPro
                 <Text style={[styles.cell, styles.colComprobante]}>{venta.tipoComprobante}</Text>
                 <Text style={[styles.cell, styles.colCliente]}>{venta.clienteNombre ?? 'Cliente general'}</Text>
                 <Text style={[styles.cell, styles.colEstado]}>{venta.estado}</Text>
-                <Text style={[styles.cell, styles.colTotal]}>{venta.total.toFixed(2)}</Text>
-                <Text style={[styles.cell, styles.colCosto]}>{venta.costo.toFixed(2)}</Text>
-                <Text style={[styles.cell, styles.colGanancia]}>{venta.ganancia.toFixed(2)}</Text>
+                <Text style={[styles.cell, styles.colTotal]}>{formatMoneda(venta.total)}</Text>
+                <Text style={[styles.cell, styles.colCosto]}>{formatMoneda(venta.costo)}</Text>
+                <Text style={[styles.cell, styles.colGanancia]}>{formatMoneda(venta.ganancia)}</Text>
                 <Text style={[styles.cell, styles.colFecha]}>{new Date(venta.createdAt).toLocaleDateString()}</Text>
               </View>
               {venta.detalles.length > 0 && (
                 <View style={styles.detalleWrapper}>
                   {venta.detalles.map((detalle, index) => (
                     <Text key={index} style={styles.detalleText}>
-                      • {detalle.nombre} — {detalle.cantidad} x Bs. {detalle.precioUnitario.toFixed(2)} = Bs. {detalle.total.toFixed(2)}
+                      • {detalle.nombre} — {detalle.cantidad} x {formatMoneda(detalle.precioUnitario)} = {formatMoneda(detalle.total)}
                     </Text>
                   ))}
                 </View>

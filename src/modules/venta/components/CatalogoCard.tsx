@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react'
+import { formatMoneda } from '@/lib/currency'
 import ImagenFallbackIcon from '@/components/ImagenFallbackIcon'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -36,7 +37,7 @@ function CatalogoCard({ variante, cantidadEnCarrito, onAdd }: CatalogoCardProps)
             {variante.color ?? 'Sin color'} · US {variante.tallaUs ?? '-'}
           </p>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold">Bs. {variante.precioVenta}</span>
+            <span className="text-sm font-semibold">{formatMoneda(variante.precioVenta)}</span>
             <Badge variant={sinStockDisponible ? 'destructive' : 'outline'}>
               Stock {variante.stock}
             </Badge>
