@@ -9,51 +9,51 @@ import {
   getDashboardVentasPorCategoriaMes,
 } from '../api/dashboard.api'
 
-export function useDashboardVentasMes() {
+export function useDashboardVentasMes(anio: number, mes: number) {
   return useQuery({
-    queryKey: ['dashboard', 'ventas-mes'],
-    queryFn: getDashboardVentasMes,
+    queryKey: ['dashboard', 'ventas-mes', anio, mes],
+    queryFn: () => getDashboardVentasMes(anio, mes),
   })
 }
 
-export function useDashboardComprasMes() {
+export function useDashboardComprasMes(anio: number, mes: number) {
   return useQuery({
-    queryKey: ['dashboard', 'compras-mes'],
-    queryFn: getDashboardComprasMes,
+    queryKey: ['dashboard', 'compras-mes', anio, mes],
+    queryFn: () => getDashboardComprasMes(anio, mes),
   })
 }
 
-export function useDashboardMargenGananciaMes() {
+export function useDashboardMargenGananciaMes(anio: number, mes: number) {
   return useQuery({
-    queryKey: ['dashboard', 'margen-ganancia-mes'],
-    queryFn: getDashboardMargenGananciaMes,
+    queryKey: ['dashboard', 'margen-ganancia-mes', anio, mes],
+    queryFn: () => getDashboardMargenGananciaMes(anio, mes),
   })
 }
 
-export function useDashboardParesVendidosMes() {
+export function useDashboardParesVendidosMes(anio: number, mes: number) {
   return useQuery({
-    queryKey: ['dashboard', 'pares-vendidos-mes'],
-    queryFn: getDashboardParesVendidosMes,
+    queryKey: ['dashboard', 'pares-vendidos-mes', anio, mes],
+    queryFn: () => getDashboardParesVendidosMes(anio, mes),
   })
 }
 
-export function useDashboardVentasPorCategoriaMes() {
+export function useDashboardVentasPorCategoriaMes(anio: number, mes: number) {
   return useQuery({
-    queryKey: ['dashboard', 'ventas-por-categoria-mes'],
-    queryFn: getDashboardVentasPorCategoriaMes,
+    queryKey: ['dashboard', 'ventas-por-categoria-mes', anio, mes],
+    queryFn: () => getDashboardVentasPorCategoriaMes(anio, mes),
   })
 }
 
-export function useDashboardTopProductosMes(top = 5) {
+export function useDashboardTopProductosMes(anio: number, mes: number, top = 5) {
   return useQuery({
-    queryKey: ['dashboard', 'top-productos-mes', top],
-    queryFn: () => getDashboardTopProductosMes(top),
+    queryKey: ['dashboard', 'top-productos-mes', anio, mes, top],
+    queryFn: () => getDashboardTopProductosMes(anio, mes, top),
   })
 }
 
-export function useDashboardComprasVsVentasMes() {
+export function useDashboardComprasVsVentasMes(anio: number, mes: number) {
   return useQuery({
-    queryKey: ['dashboard', 'compras-vs-ventas-mes'],
-    queryFn: getDashboardComprasVsVentasMes,
+    queryKey: ['dashboard', 'compras-vs-ventas-mes', anio, mes],
+    queryFn: () => getDashboardComprasVsVentasMes(anio, mes),
   })
 }
